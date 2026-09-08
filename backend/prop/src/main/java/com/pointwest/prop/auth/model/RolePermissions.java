@@ -1,4 +1,4 @@
-package com.pointwest.prop.security.model;
+package com.pointwest.prop.auth.model;
 
 import java.util.EnumMap;
 import java.util.Map;

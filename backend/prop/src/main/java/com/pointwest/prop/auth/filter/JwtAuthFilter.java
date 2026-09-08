@@ -1,4 +1,4 @@
-package com.pointwest.prop.security.filter;
+package com.pointwest.prop.auth.filter;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,9 +11,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.pointwest.prop.security.jwt.JwtAuthenticationToken;
-import com.pointwest.prop.security.jwt.JwtService;
-import com.pointwest.prop.security.model.Role;
+import com.pointwest.prop.auth.jwt.JwtAuthenticationToken;
+import com.pointwest.prop.auth.jwt.JwtService;
+import com.pointwest.prop.auth.model.Role;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

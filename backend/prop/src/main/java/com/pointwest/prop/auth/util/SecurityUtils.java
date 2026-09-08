@@ -1,9 +1,9 @@
-package com.pointwest.prop.security.util;
+package com.pointwest.prop.auth.util;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.pointwest.prop.security.jwt.JwtAuthenticationToken;
+import com.pointwest.prop.auth.jwt.JwtAuthenticationToken;
 
 public final class SecurityUtils {
 

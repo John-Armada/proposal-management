@@ -1,4 +1,4 @@
-package com.pointwest.prop.security.jwt;
+package com.pointwest.prop.auth.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
