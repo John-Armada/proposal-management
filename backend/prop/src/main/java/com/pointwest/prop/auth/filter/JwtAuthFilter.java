@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +16,6 @@ import com.pointwest.prop.auth.jwt.JwtService;
 import com.pointwest.prop.auth.model.Role;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -66,8 +64,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .collect(Collectors.toList());
             authorities.add(new SimpleGrantedAuthority(role.authority()));
 
-            if (jwtService.isBlacklisted(id)){
-                throw new BadCredentialsException("Access token has been revoked.");
+            if (jwtService.isBlacklisted(id)) {
+                throw new JwtException("Access token has been revoked.");
             }
 
             JwtAuthenticationToken authentication = new JwtAuthenticationToken(
