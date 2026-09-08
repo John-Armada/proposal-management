@@ -1,0 +1,10 @@
+package com.pointwest.prop.auth.model;
+
+public final class Permission {
+
+    private Permission() {
+    }
+
+    // public static final String PROP_READ_ALL = "prop:read:all";
+    // public static final String PROP_WRITE_ALL = "event:write:all";
+}
