@@ -1,0 +1,81 @@
+@use '../abstracts' as *;
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-content {
+  position: fixed;
+  top: $header-height;
+  left: $nav-width-collapsed;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  transition: left $transition-base;
+  overflow: hidden;
+
+  @include mobile {
+    left: 0 !important;
+    top: $header-height-mobile;
+  }
+}
+
+.app-nav.expanded ~ .app-content {
+  left: $nav-width-expanded;
+
+  @include tablet {
+    left: $nav-width-collapsed !important;
+  }
+}
+
+.main-content {
+  flex: 1 1 100%;
+  overflow-y: auto;
+  padding: $space-4;
+  background: $body-bg;
+  transition: flex-basis $transition-base;
+}
+
+.app-content.feed-open {
+  .main-content {
+    flex-basis: 75%;
+
+    @include tablet {
+      flex-basis: calc(100% - #{$feed-width-pct-tablet});
+    }
+
+    @include mobile {
+      flex-basis: 100%;
+    }
+  }
+
+  .feed-panel {
+    display: block;
+
+    @include tablet {
+      flex-basis: $feed-width-pct-tablet;
+    }
+
+    @include mobile {
+      position: fixed;
+      inset: $header-height-mobile 0 0 0;
+      flex-basis: 100% !important;
+      min-width: 0;
+      z-index: 160;
+      border-left: none;
+    }
+  }
+}
+
+.feed-panel {
+  flex-basis: $feed-width-pct;
+  min-width: $feed-min-width;
+  border-left: 0.0625rem solid $border-color;
+  background: $white;
+  overflow-y: auto;
+  padding: $space-4;
+  display: none;
+}
