@@ -1,7 +1,7 @@
 export const APP_USER_ROLES = [
-  'ROLE_ADMIN',
-  'ROLE_REVIEWER',
-  'ROLE_AUTHOR',
+  'ADMIN',
+  'REVIEWER',
+  'AUTHOR',
 ] as const;
 
 export type AppUserRole = typeof APP_USER_ROLES[number];
@@ -19,7 +19,7 @@ export interface AuthSession {
 }
 
 export interface AuthResponse {
-    token: string;
+  accessToken: string;
     tokenType: string;
     expiresInSeconds: number;
 }

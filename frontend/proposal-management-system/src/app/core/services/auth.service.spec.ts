@@ -1,13 +1,17 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
-import { Auth } from './auth.service';
+import { AuthService } from './auth.service';
 
 describe('Auth', () => {
-  let service: Auth;
+  let service: AuthService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Auth);
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideRouter([])],
+    });
+    service = TestBed.inject(AuthService);
   });
 
   it('should be created', () => {

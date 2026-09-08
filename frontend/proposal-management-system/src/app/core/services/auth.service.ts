@@ -34,6 +34,7 @@ export class AuthService {
                                 tap(session => {
                                     this.persistSession(session);
                                     this._session.set(session);
+                                    void this.router.navigateByUrl(this.routeForRole(session.role));
                                 })
                         );
     }
@@ -65,24 +66,33 @@ export class AuthService {
     }
 
     private buildSession(response: AuthResponse): AuthSession {
-        const claims = decodeJwt(response.token);
-        const role = claims['roles'];
+        const claims = decodeJwt<Record<string, unknown>>(response.accessToken);
+        const roles = claims['roles'];
+        const role = Array.isArray(roles) ? roles[0] : roles;
 
         if (!isAppUserRole(role)){
             throw new Error(`Invalid role in access token: ${role}`);
         }
 
         return {
-            userId: claims['sub'],
-            email: claims['email'] ?? '',
-            firstName: claims['firstName'] ?? '',
-            lastName: claims['lastName'] ?? '',
+            userId: String(claims['sub'] ?? ''),
+            email: String(claims['email'] ?? ''),
+            firstName: String(claims['firstName'] ?? ''),
+            lastName: String(claims['lastName'] ?? ''),
             role,
-            deptId: claims['deptId'],
-            accessToken: response.token,
+            deptId: String(claims['dept_id'] ?? ''),
+            accessToken: response.accessToken,
             tokenType: response.tokenType,
             expiresAt: Date.now() + response.expiresInSeconds * 1000
         };
+    }
+
+    private routeForRole(role: AppUserRole): string {
+        switch (role) {
+            case 'ADMIN': return '/admin';
+            case 'REVIEWER': return '/reviewer';
+            case 'AUTHOR': return '/author';
+        }
     }
 
     private persistSession(session: AuthSession): void {
