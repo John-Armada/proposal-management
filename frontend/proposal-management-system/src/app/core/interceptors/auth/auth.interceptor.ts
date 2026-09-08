@@ -19,7 +19,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authenticatedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-          return throwError(() => error);
+        return throwError(() => error);
       })
    );
 };
