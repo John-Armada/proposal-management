@@ -4,6 +4,10 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.url.endsWith('/api/auth/login')) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
   const token = authService.getAccessToken();
 

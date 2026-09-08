@@ -10,7 +10,7 @@ export const roleGuard: CanActivateFn = (_route, state) => {
   const session = auth.session();
 
   if (!session || !auth.isAuthenticated()) {
-    return router.createUrlTree(['/'], {
+    return router.createUrlTree(['/login'], {
       queryParams: { returnUrl: state.url },
     });
   }
@@ -26,10 +26,10 @@ export const roleGuard: CanActivateFn = (_route, state) => {
 function routeForRole(role: AppUserRole): string {
   switch (role) {
     case 'ADMIN':
-      return '/admin';
+      return '/app/admin';
     case 'REVIEWER':
-      return '/reviewer';
+      return '/app/reviewer';
     case 'AUTHOR':
-      return '/author';
+      return '/app/author';
   }
 }

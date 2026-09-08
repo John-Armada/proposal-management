@@ -89,9 +89,9 @@ export class AuthService {
 
     private routeForRole(role: AppUserRole): string {
         switch (role) {
-            case 'ADMIN': return '/admin';
-            case 'REVIEWER': return '/reviewer';
-            case 'AUTHOR': return '/author';
+            case 'ADMIN': return '/app/admin';
+            case 'REVIEWER': return '/app/reviewer';
+            case 'AUTHOR': return '/app/author';
         }
     }
 

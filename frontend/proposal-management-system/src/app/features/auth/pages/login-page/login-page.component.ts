@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../../../../core/services/auth.service';
@@ -27,9 +28,10 @@ export class LoginPage {
 
     this.auth.login(this.credentials).subscribe({
       next: () => this.isSubmitting = false,
-      error: () => {
+      error: (error: HttpErrorResponse) => {
         this.isSubmitting = false;
-        this.loginError = 'Unable to log in. Please check your email and password.';
+        this.loginError = error.error?.message
+          ?? 'Unable to log in. Please check your email and password.';
       },
     });
   }
