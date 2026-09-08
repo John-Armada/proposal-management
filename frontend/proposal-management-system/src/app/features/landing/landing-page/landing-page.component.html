@@ -1,0 +1,54 @@
+<!-- Navigation Header -->
+<header class="landing-header">
+  <div class="header-container">
+    <a class="brand-logo" (click)="scrollToSection('home')">
+      <img src="branding/logo.svg" alt="Proposal Management System Logo" class="logo-image">
+    </a>
+
+    <nav class="nav-menu" aria-label="Primary Navigation">
+      <ul class="nav-links">
+        <li>
+          <button type="button" class="nav-link" (click)="scrollToSection('home')">Home</button>
+        </li>
+        <li>
+          <button type="button" class="nav-link" (click)="scrollToSection('features')">Features</button>
+        </li>
+        <li>
+          <button type="button" class="nav-link" (click)="scrollToSection('contact')">Contact Us</button>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <button type="button" class="btn btn-login" (click)="navigateToLogin()">
+        <fa-icon [icon]="icons.login"></fa-icon>
+        Log In
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="landing-main">
+  <section id="home" class="hero-section">
+    <div class="hero-container">
+      <span class="hero-badge">
+        <fa-icon [icon]="icons.shield" class="badge-icon"></fa-icon>
+        Enterprise Proposal Governance
+      </span>
+      <h1 class="display-1 hero-title">Centralized RFP Workflows & Governance</h1>
+      <p class="hero-paragraph">
+        AutoDraft streamlines account intake, standardizes Google Docs proposal templates, automates tiered review approvals, and tracks line-item margins with precision.
+      </p>
+      <div class="hero-actions">
+        <button type="button" class="btn btn-primary" (click)="navigateToLogin()">
+          Get Started
+          <fa-icon [icon]="icons.arrowRight"></fa-icon>
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="scrollToSection('features')">
+          <fa-icon [icon]="icons.explore"></fa-icon>
+          Explore Features
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
