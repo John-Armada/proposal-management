@@ -26,8 +26,24 @@ public final class SecurityUtils {
         return currentAuth().getDeptId();
     }
 
-    public static boolean isAdmin() {
+    private static boolean hasAuthority(String authority) {
         return currentAuth().getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(a -> a.getAuthority().equals(authority));
+    }
+
+    public static boolean isAdmin() {
+        return hasAuthority("ROLE_ADMIN");
+    }
+
+    public static boolean isReviewer() {
+        return hasAuthority("ROLE_REVIEWER");
+    }
+
+    public static boolean isAuthor() {
+        return hasAuthority("ROLE_AUTHOR");
+    }
+
+    public static boolean isSameIdentityAs(Long otherUserId) {
+        return otherUserId != null && otherUserId.equals(currentUserId());
     }
 }
