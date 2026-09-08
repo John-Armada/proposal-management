@@ -1,6 +1,6 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
 
-import java.math.BigDecimal;
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,32 +22,24 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "line_items")
-public class LineItem {
+@Table(name = "proposal_versions")
+public class ProposalVersion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(name = "version_number", nullable = false)
+    private Integer versionNumber;
 
-    private BigDecimal quantity;
+    @Lob
+    @Column(name = "metadata_snapshot")
+    private String metadataSnapshot;
 
-    @Column(name = "unit_price", precision = 15, scale = 2)
-    private BigDecimal unitPrice;
-
-    @Column(name = "discount_pct", precision = 5, scale = 2)
-    private BigDecimal discountPct;
-
-    @Column(name = "tax_pct", precision = 5, scale = 2)
-    private BigDecimal taxPct;
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proposal_id")
     private Proposal proposal;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "catalog_item_id")
-    private CatalogItem catalogItem;
 }

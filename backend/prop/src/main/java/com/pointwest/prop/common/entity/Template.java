@@ -1,4 +1,4 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,6 +1,6 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
 
-import com.pointwest.prop.security.model.Role;
+import com.pointwest.prop.auth.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

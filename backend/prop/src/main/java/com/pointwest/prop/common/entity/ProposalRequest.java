@@ -1,4 +1,4 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
 
 import java.time.LocalDate;
 
@@ -21,27 +21,34 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "reviews")
-public class Review {
+@Table(name = "proposal_requests")
+public class ProposalRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "requirements_summary", columnDefinition = "TEXT")
+    private String requirementsSummary;
+
+    private LocalDate deadline;
+
     @Column(nullable = false)
-    private String decision;
-
-    @Column(columnDefinition = "TEXT")
-    private String comment;
-
-    @Column(name = "decided_at")
-    private LocalDate decidedAt;
+    private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "proposal_id")
-    private Proposal proposal;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_id")
-    private User reviewer;
+    @JoinColumn(name = "assigned_author_id")
+    private User assignedAuthor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "offering_id")
+    private Offering offering;
 }

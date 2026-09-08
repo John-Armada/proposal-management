@@ -1,4 +1,6 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
+
+import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,19 +18,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "departments")
-public class Department {
+@Table(name = "catalog_items")
+public class CatalogItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    private String category;
 
-    @Column(nullable = false)
-    private Boolean active;
+    @Column(name = "default_unit_price", precision = 15, scale = 2)
+    private BigDecimal defaultUnitPrice;
 }

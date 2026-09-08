@@ -1,4 +1,6 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
+
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,19 +18,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "offerings")
-public class Offering {
+@Table(name = "job_run_logs")
+public class JobRunLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(name = "job_name", nullable = false)
+    private String jobName;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(name = "started_at")
+    private Instant startedAt;
 
     @Column(nullable = false)
-    private Boolean active;
+    private String status;
+
+    @Column(name = "records_processed")
+    private Integer recordsProcessed;
 }

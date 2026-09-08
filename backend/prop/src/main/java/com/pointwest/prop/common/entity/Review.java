@@ -1,6 +1,6 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,24 +21,27 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "proposal_versions")
-public class ProposalVersion {
+@Table(name = "reviews")
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "version_number", nullable = false)
-    private Integer versionNumber;
+    @Column(nullable = false)
+    private String decision;
 
-    @Lob
-    @Column(name = "metadata_snapshot")
-    private String metadataSnapshot;
+    @Column(columnDefinition = "TEXT")
+    private String comment;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(name = "decided_at")
+    private LocalDate decidedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proposal_id")
     private Proposal proposal;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewer_id")
+    private User reviewer;
 }

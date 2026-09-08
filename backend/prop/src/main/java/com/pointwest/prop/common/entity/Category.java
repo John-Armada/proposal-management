@@ -1,4 +1,4 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,18 +16,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "accounts")
-public class Account {
+@Table(name = "categories")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    private String industry;
-
-    @Column(name = "primary_contact")
-    private String primaryContact;
+    @Column(nullable = false)
+    private Boolean active;
 }

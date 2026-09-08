@@ -1,10 +1,11 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,16 +17,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "email_outbox")
+public class EmailOutbox {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(name = "event_type", nullable = false)
+    private String eventType;
 
-    @Column(nullable = false)
-    private Boolean active;
+    @Lob
+    private String payload;
+
+    @Column(name = "email_status", nullable = false)
+    private String emailStatus;
+
+    @Column(name = "retry_count")
+    private Integer retryCount;
 }
