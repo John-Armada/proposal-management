@@ -1,4 +1,4 @@
-package com.pointwest.prop.exception;
+package com.pointwest.prop.common.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 
