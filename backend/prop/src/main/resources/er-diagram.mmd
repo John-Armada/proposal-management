@@ -1,0 +1,131 @@
+erDiagram
+    Offering {
+        int id PK
+        code name
+        description description
+        boolean active
+    }
+    Department {
+        int id PK
+        code name
+        description description
+        boolean active
+    }
+    Template {
+        int id PK
+        name name
+        purpose purpose
+        url google_doc_url
+    }
+    Account {
+        int id PK
+        name name
+        industry industry
+        contact primary_contact
+    }
+    User {
+        int id PK
+        string name
+        string email
+        string password_hash
+        string role
+        int department_id FK
+    }
+    Category {
+        int id PK
+        name name
+        boolean active
+    }
+    ProposalRequest {
+        int id PK
+        summary requirements_summary
+        date deadline
+        string status
+        int account_id FK
+        int assigned_author_id FK
+        int department_id FK
+        int offering_id FK
+    }
+    Proposal {
+        int id PK
+        string status
+        integer current_version
+        url google_doc_url
+        money contract_value
+        integer project_duration 
+        resource total_resources
+        int request_id FK
+        int template_id FK
+        int category_id FK
+        int department_id FK
+        int offering_id FK
+        int account_id FK 
+    }
+    CatalogItem {
+        int id PK
+        name name
+        string category
+        money default_unit_price
+    }
+    LineItem {
+        int id PK
+        description description
+        decimal quantity
+        money unit_price
+        decimal discount_pct
+        decimal tax_pct
+        int proposal_id FK
+        int catalog_item_id FK
+    }
+    Review {
+        int id PK
+        string decision
+        string comment
+        date decided_at
+        int proposal_id FK
+        int reviewer_id FK
+    }
+    ProposalVersion {
+        int id PK
+        integer version_number
+        snapshot metadata_snapshot
+        timestamp created_at
+        int proposal_id FK
+    }
+    GoogleDoc {
+        string external_not_in_MySQL
+        string actual_written_content
+        string native_version_history
+    }
+    EmailOutbox {
+        int id PK
+        string event_type
+        string payload
+        string email_status
+        integer retry_count
+    }
+    JobRunLog {
+        int id PK
+        string job_name
+        timestamp started_at
+        string status
+        integer records_processed
+    }
+
+    Offering ||--|{ ProposalRequest : is_for
+    Offering ||--|{ Proposal : is_for
+    Department ||--|{ ProposalRequest : belongs_to
+    Department ||--|{ Proposal : belongs_to
+    Department ||--|{ User : employs
+    Template ||--|{ Proposal : uses
+    Account ||--|{ ProposalRequest : from
+    Account || --|{ Proposal : associated_with
+    User ||--|{ ProposalRequest : assigned_to
+    User ||--|{ Review : performs
+    Category ||--|{ Proposal : categorized_as
+    ProposalRequest |o--|| Proposal : is_for
+    Proposal ||--|{ LineItem : contains
+    CatalogItem ||--|{ LineItem : used_in
+    Proposal ||--|{ Review : reviewed_by
+    Proposal ||--|{ ProposalVersion : has
+    Proposal |o--o| GoogleDoc : external_reference
