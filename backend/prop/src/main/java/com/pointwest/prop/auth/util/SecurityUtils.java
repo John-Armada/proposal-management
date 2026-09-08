@@ -1,5 +1,7 @@
 package com.pointwest.prop.auth.util;
 
+import java.util.UUID;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

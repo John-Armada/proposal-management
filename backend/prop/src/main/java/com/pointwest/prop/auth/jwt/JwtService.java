@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -42,9 +43,12 @@ public class JwtService {
 
         Set<String> permissions = RolePermissions.of(user.getRole());
 
+        String jti = UUID.randomUUID().toString();
+
         return Jwts.builder()
                 .issuer(properties.getIssuer())
                 .subject(String.valueOf(user.getUserId()))
+                .id(jti)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
                 .claim("user_id", user.getUserId())
@@ -65,6 +69,11 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public boolean isBlacklisted (String id) {
+        //TODO: Call a repository to check if id exists in the appropriate table.
+        return true;
     }
 
     public Role extractRole(Claims claims) {
