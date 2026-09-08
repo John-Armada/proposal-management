@@ -1,4 +1,4 @@
-package com.pointwest.bootcamp.prop.security.jwt;
+package com.pointwest.prop.security.jwt;
 
 import java.util.Collection;
 

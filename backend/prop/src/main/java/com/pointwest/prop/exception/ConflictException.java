@@ -1,4 +1,4 @@
-package com.pointwest.bootcamp.prop.exception;
+package com.pointwest.prop.exception;
 
 public class ConflictException extends RuntimeException {
 

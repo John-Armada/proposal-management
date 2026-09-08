@@ -1,4 +1,4 @@
-package com.pointwest.bootcamp.prop.security.model;
+package com.pointwest.prop.security.model;
 
 import java.util.EnumMap;
 import java.util.Map;

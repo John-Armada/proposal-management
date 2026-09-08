@@ -1,4 +1,4 @@
-package com.pointwest.bootcamp.prop.security.jwt;
+package com.pointwest.prop.security.jwt;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -10,9 +10,9 @@ import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
 
-import com.pointwest.bootcamp.prop.entity.User;
-import com.pointwest.bootcamp.prop.security.model.Role;
-import com.pointwest.bootcamp.prop.security.model.RolePermissions;
+import com.pointwest.prop.entity.User;
+import com.pointwest.prop.security.model.Role;
+import com.pointwest.prop.security.model.RolePermissions;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

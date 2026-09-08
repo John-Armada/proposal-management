@@ -1,4 +1,4 @@
-package com.pointwest.bootcamp.prop;
+package com.pointwest.prop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

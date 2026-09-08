@@ -1,4 +1,4 @@
-package com.pointwest.bootcamp.prop;
+package com.pointwest.prop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

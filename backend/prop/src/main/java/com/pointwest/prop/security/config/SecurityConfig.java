@@ -1,4 +1,4 @@
-package com.pointwest.bootcamp.prop.security.config;
+package com.pointwest.prop.security.config;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.pointwest.bootcamp.prop.security.filter.JwtAuthFilter;
+import com.pointwest.prop.security.filter.JwtAuthFilter;
 
 @Configuration
 @EnableMethodSecurity
