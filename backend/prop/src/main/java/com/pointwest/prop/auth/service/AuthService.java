@@ -10,6 +10,7 @@ import com.pointwest.prop.auth.dto.LoginRequestDto;
 import com.pointwest.prop.auth.jwt.JwtProperties;
 import com.pointwest.prop.auth.jwt.JwtService;
 import com.pointwest.prop.common.entity.User;
+import com.pointwest.prop.common.exception.AccountLockedException;
 import com.pointwest.prop.common.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,17 +25,34 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final JwtProperties jwtProperties;
+    private final LoginAttemptService loginAttemptService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public AuthResponseDto login(LoginRequestDto request) {
         User user = userRepository.findByEmailIgnoreCase(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
+        if (user.isCurrentlyLocked()) {
+            throw new AccountLockedException(
+                    "This account is locked due to too many failed login attempts. Please try again later.");
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            LockoutResult result = loginAttemptService.registerFailedAttempt(user.getUserId());
+
+            if (result.justLocked()) {
+                log.warn("Account locked for user id {} after too many failed attempts", user.getUserId());
+                throw new AccountLockedException(
+                        "This account is now locked due to too many failed login attempts. Please try again in "
+                                + result.lockDurationMinutes() + " minutes.");
+            }
+
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        log.info("Login succeeded for user {}", user.getUserId());
+        loginAttemptService.clearLockoutState(user.getUserId());
+
+        log.info("Login succeeded for user id {}", user.getUserId());
 
         String accessToken = jwtService.generateAccessToken(user);
         return new AuthResponseDto(

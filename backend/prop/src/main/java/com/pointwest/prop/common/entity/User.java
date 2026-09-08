@@ -1,5 +1,7 @@
 package com.pointwest.prop.common.entity;
 
+import java.time.LocalDateTime;
+
 import com.pointwest.prop.auth.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +52,12 @@ public class User {
     @JoinColumn(name = "department_id")
     private Department department;
 
+    @Column(name = "failed_login_attempts", nullable = false)
+    private int failedLoginAttempts = 0;
+
+    @Column(name = "locked_until")
+    private LocalDateTime lockedUntil;
+
     public Long getDeptId() {
         return department == null ? null : department.getId();
     }
@@ -65,5 +73,9 @@ public class User {
             return firstName.trim();
         }
         return firstName.trim() + " " + lastName.trim();
+    }
+
+    public boolean isCurrentlyLocked() {
+        return lockedUntil != null && lockedUntil.isAfter(LocalDateTime.now());
     }
 }

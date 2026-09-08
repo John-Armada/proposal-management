@@ -1,6 +1,8 @@
 package com.pointwest.prop.auth.model;
 
 public enum Role {
+    AUTHOR,
+    REVIEWER,
     ADMIN;
 
     public String authority() {
@@ -9,5 +11,13 @@ public enum Role {
 
     public boolean isAdmin() {
         return this == ADMIN;
+    }
+
+    public boolean isReviewer() {
+        return this == REVIEWER;
+    }
+
+    public boolean isAuthor() {
+        return this == AUTHOR;
     }
 }
