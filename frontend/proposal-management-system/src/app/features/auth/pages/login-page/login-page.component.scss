@@ -72,8 +72,7 @@
         }
 
         &:focus {
-            border-color: $gdocs-blue;
-            box-shadow: 0 0 0 0.2rem rgba($gdocs-blue, 0.12);
+            box-shadow: 0 0 0 0.2rem rgba($input-field, 1.5);
             outline: none;
         }
     }
