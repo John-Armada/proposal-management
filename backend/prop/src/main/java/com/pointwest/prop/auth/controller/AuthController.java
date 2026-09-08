@@ -11,9 +11,7 @@ import com.pointwest.prop.auth.dto.LoginRequestDto;
 import com.pointwest.prop.auth.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -23,9 +21,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginRequestDto request) {
-        log.info("Login attempt for {}", request.getEmail());
         AuthResponseDto response = authService.login(request);
-
         return ResponseEntity.ok(response);
     }
 }
