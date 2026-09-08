@@ -18,42 +18,49 @@ public class GlobalExceptionHandler {
         @ExceptionHandler(ResourceNotFoundException.class)
         public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
                         ResourceNotFoundException ex, HttpServletRequest request) {
-                log.warn("Resource not found: {}", ex.getMessage());
+                log.warn("Resource not found on {}", request.getRequestURI());
                 return build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
         }
 
         @ExceptionHandler(ConflictException.class)
         public ResponseEntity<ErrorResponse> handleConflictException(
                         ConflictException ex, HttpServletRequest request) {
-                log.warn("Conflict error: {}", ex.getMessage());
+                log.warn("Conflict error on {}", request.getRequestURI());
                 return build(HttpStatus.CONFLICT, ex.getMessage(), request);
         }
 
         @ExceptionHandler(BadRequestException.class)
         public ResponseEntity<ErrorResponse> handleBadRequestException(
                         BadRequestException ex, HttpServletRequest request) {
-                log.warn("Bad request: {}", ex.getMessage());
+                log.warn("Bad request on {}", request.getRequestURI());
                 return build(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
         }
 
         @ExceptionHandler(AccessDeniedException.class)
         public ResponseEntity<ErrorResponse> handleAccessDeniedException(
                         AccessDeniedException ex, HttpServletRequest request) {
-                log.warn("Access denied on {}: {}", request.getRequestURI(), ex.getMessage());
+                log.warn("Access denied on {}", request.getRequestURI());
                 return build(HttpStatus.FORBIDDEN, "You do not have permission to access this resource", request);
+        }
+
+        @ExceptionHandler(AccountLockedException.class)
+        public ResponseEntity<ErrorResponse> handleAccountLockedException(
+                        AccountLockedException ex, HttpServletRequest request) {
+                log.warn("Login blocked due to account lockout on {}", request.getRequestURI());
+                return build(HttpStatus.LOCKED, ex.getMessage(), request);
         }
 
         @ExceptionHandler(AuthenticationException.class)
         public ResponseEntity<ErrorResponse> handleAuthenticationException(
                         AuthenticationException ex, HttpServletRequest request) {
-                log.warn("Authentication failed on {}: {}", request.getRequestURI(), ex.getMessage());
+                log.warn("Authentication failed on {}", request.getRequestURI());
                 return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
         }
 
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ErrorResponse> handleGlobalException(
                         Exception ex, HttpServletRequest request) {
-                log.error("Unhandled exception occurred: ", ex);
+                log.error("Unhandled exception on {}", request.getRequestURI(), ex);
                 return build(HttpStatus.INTERNAL_SERVER_ERROR,
                                 "An unexpected error occurred. Please try again later.", request);
         }
