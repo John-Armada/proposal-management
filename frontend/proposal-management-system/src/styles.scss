@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+// src/styles.scss
+
+// 1. Load Web Fonts via Fontsource
+@use '@fontsource/public-sans/400.css' as *;
+@use '@fontsource/public-sans/500.css' as *;
+@use '@fontsource/public-sans/600.css' as *;
+@use '@fontsource/public-sans/700.css' as *;
+@use '@fontsource/jetbrains-mono/500.css' as *;
+
+// 2. Custom Reset, Typography, & Shell Layout
+@use 'base/reset';
+@use 'base/typography';
+@use 'layout/shell';
+
+// 3. Custom Bootstrap Setup
+@use 'abstracts/bootstrap-custom' as *;
