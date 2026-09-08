@@ -19,10 +19,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authenticatedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-          // If a request fails with 401 Unauthorized while authenticated, clean up and redirect
-          if (error.status === 401 && authService.isAuthenticated()) {
-            authService.logout(); // Already handles clearing storage and navigating to /login
-          }
           return throwError(() => error);
       })
    );
