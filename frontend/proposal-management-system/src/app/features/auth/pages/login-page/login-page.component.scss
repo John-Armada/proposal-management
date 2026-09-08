@@ -3,30 +3,87 @@
 .login-page {
     min-height: 100vh;
     display: grid;
-    place-items: center;
-    padding: $space-4;
-    background-color: var(--body-bg);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    background: $body-bg;
 }
 
-.login-panel {
-    width: min(100%, 27rem);
+.login-showcase-card,
+.login-form-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: $space-6 $space-5;
     border: 0.0625rem solid rgba($primary, 0.08);
-    border-radius: $border-radius-lg;
-    background: rgba($white, 0.92);
-    box-shadow: 0 1.5rem 3.75rem rgba($brand-rail, 0.08);
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.login-showcase-card {
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: $space-6 $space-5;
+    background: #A9CDBE;
+    color: $white;
+    text-align: center;
+}
+
+.showcase-logo {
+    width: min(80%, 18rem);
+    aspect-ratio: 1;
+    object-fit: contain;
+    margin-bottom: $space-5;
+}
+
+.showcase-copy {
+    max-width: 20rem;
+
+    h1 {
+        margin: 0 0 $space-2;
+        color: $white;
+        font-size: 1.5rem;
+        font-weight: var(--fw-bold);
+        letter-spacing: 0;
+    }
+
+    p {
+        margin: 0;
+        color: rgba($white, 0.84);
+        font-size: 0.8125rem;
+        line-height: 1.45;
+    }
+}
+
+.login-form-card {
+    min-height: 100vh;
+    justify-content: center;
+    padding: $space-6 clamp($space-5, 7vw, 7rem);
+    background: rgba($white, 0.96);
 }
 
 .login-header {
     margin-bottom: $space-5;
-    text-align: center;
+    text-align: left;
 
-    h1 {
-        margin: 0 0 $space-1;
-        font-size: 1.75rem;
+    .form-logo {
+        width: 2.5rem;
+        height: 2.5rem;
+        object-fit: contain;
+        margin-bottom: $space-3;
+    }
+
+    .app-name {
+        margin: 0 0 $space-5;
+        color: $primary;
+        font-size: 1rem;
+        font-weight: var(--fw-bold);
+    }
+
+    h2 {
+        margin: 0 0 $space-2;
+        font-size: 2rem;
         color: $body-color;
         font-weight: var(--fw-bold);
     }
@@ -35,16 +92,7 @@
         margin: 0;
         font-size: 0.875rem;
         color: $slate;
-    }
-}
-
-.auth-link {
-    color: $gdocs-blue;
-    font-weight: var(--fw-medium);
-    text-decoration: none;
-
-    &:hover {
-        text-decoration: underline;
+        font-weight: var(--fw-semibold);
     }
 }
 
@@ -54,25 +102,36 @@
 
 .form-field {
     width: 100%;
-    margin-bottom: $space-3;
+    margin-bottom: $space-4;
+
+    label {
+        display: block;
+        margin-bottom: $space-1;
+        color: $slate;
+        font-size: 0.75rem;
+        font-weight: var(--fw-semibold);
+    }
 
     input {
         width: 100%;
         height: 3.25rem;
         padding: 0 $space-3;
-        border: 0.0625rem solid #9aa4b2;
+        border: 0.0625rem solid $input-field;
         border-radius: $border-radius-lg;
         background: $white;
         color: $body-color;
-        font-size: 0.9375rem;
+        font-size: 0.875rem;
+        font-weight: var(--fw-semibold);
         transition: border-color $transition-fast, box-shadow $transition-fast;
 
         &::placeholder {
-            color: $slate;
+            color: rgba($slate, 0.62);
+            font-weight: var(--fw-regular);
         }
 
         &:focus {
-            box-shadow: 0 0 0 0.2rem rgba($input-field, 1.5);
+            border-color: $primary;
+            box-shadow: 0 0 0 0.2rem rgba($primary, 0.12);
             outline: none;
         }
     }
@@ -86,14 +145,27 @@
     }
 }
 
+.login-error {
+    margin: 0 0 $space-3;
+    color: $danger;
+    font-size: 0.8125rem;
+    font-weight: var(--fw-semibold);
+}
+
+.login-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-3;
+}
+
 .login-button {
-    min-width: 7rem;
     height: 2.75rem;
-    display: block;
-    margin: 0 auto $space-3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0 $space-4;
     border: 0;
-    border-radius: $border-radius-pill;
+    border-radius: $border-radius;
     background: $primary;
     color: $white;
     font-weight: var(--fw-semibold);
@@ -107,14 +179,60 @@
     &:active {
         transform: translateY(0.0625rem);
     }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+}
+
+.create-account-button {
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 $space-4;
+    border: 0.0625rem solid $primary;
+    border-radius: $border-radius;
+    background: $white;
+    color: $body-color;
+    font-size: 0.875rem;
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    transition: border-color $transition-fast, color $transition-fast, transform $transition-fast;
+
+    &:hover {
+        border-color: $brand-rail;
+        color: $primary;
+    }
+
+    &:active {
+        transform: translateY(0.0625rem);
+    }
 }
 
 @include mobile {
     .login-page {
-        padding: $space-3;
+        grid-template-columns: 1fr;
+        min-height: auto;
     }
 
-    .login-panel {
+    .login-showcase-card {
+        min-height: 45vh;
         padding: $space-5 $space-4;
+    }
+
+    .showcase-logo {
+        width: min(70%, 12rem);
+        margin-bottom: $space-4;
+    }
+
+    .login-form-card {
+        min-height: 55vh;
+        padding: $space-5 $space-4;
+    }
+
+    .login-actions {
+        grid-template-columns: 1fr;
     }
 }
