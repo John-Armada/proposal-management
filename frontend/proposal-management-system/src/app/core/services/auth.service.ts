@@ -10,7 +10,7 @@ import { LoginRequest } from '../../shared/models/login-request.model';
 const STORAGE_KEY = "prp-session"
 
 @Service()
-export class Auth {
+export class AuthService {
     private readonly http = inject(HttpClient);
     private readonly router = inject(Router);
 
@@ -36,6 +36,12 @@ export class Auth {
                                     this._session.set(session);
                                 })
                         );
+    }
+
+    logout() {
+        localStorage.removeItem(STORAGE_KEY);
+        this._session.set(null);
+        this.router.navigateByUrl('/login');
     }
 
     private restoreSession (): AuthSession | null {
@@ -82,5 +88,9 @@ export class Auth {
     private persistSession(session: AuthSession): void {
         const store = localStorage
         store.setItem(STORAGE_KEY, JSON.stringify(session));
+    }
+
+    getAccessToken(): string | null {
+        return this._session()?.accessToken ?? null;
     }
 }
