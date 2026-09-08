@@ -1,7 +1,5 @@
 package com.pointwest.prop.auth.service;
 
-import java.time.LocalDateTime;
-
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,15 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private static final int MAX_FAILED_ATTEMPTS = 5;
-    private static final long LOCK_DURATION_MINUTES = 15;
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final JwtProperties jwtProperties;
+    private final LoginAttemptService loginAttemptService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public AuthResponseDto login(LoginRequestDto request) {
         User user = userRepository.findByEmailIgnoreCase(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
@@ -42,11 +38,19 @@ public class AuthService {
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            registerFailedAttempt(user);
+            LockoutResult result = loginAttemptService.registerFailedAttempt(user.getUserId());
+
+            if (result.justLocked()) {
+                log.warn("Account locked for user id {} after too many failed attempts", user.getUserId());
+                throw new AccountLockedException(
+                        "This account is now locked due to too many failed login attempts. Please try again in "
+                                + result.lockDurationMinutes() + " minutes.");
+            }
+
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        clearLockoutState(user);
+        loginAttemptService.clearLockoutState(user.getUserId());
 
         log.info("Login succeeded for user id {}", user.getUserId());
 
@@ -55,29 +59,5 @@ public class AuthService {
                 accessToken,
                 "Bearer",
                 jwtProperties.getAccessTokenTtlMinutes() * 60);
-    }
-
-    private void registerFailedAttempt(User user) {
-        int attempts = user.getFailedLoginAttempts() + 1;
-        user.setFailedLoginAttempts(attempts);
-
-        if (attempts >= MAX_FAILED_ATTEMPTS) {
-            user.setLockedUntil(LocalDateTime.now().plusMinutes(LOCK_DURATION_MINUTES));
-            userRepository.save(user);
-            log.warn("Account locked for user id {} after {} failed attempts", user.getUserId(), attempts);
-            throw new AccountLockedException(
-                    "This account is now locked due to too many failed login attempts. Please try again in "
-                            + LOCK_DURATION_MINUTES + " minutes.");
-        }
-
-        userRepository.save(user);
-    }
-
-    private void clearLockoutState(User user) {
-        if (user.getFailedLoginAttempts() != 0 || user.getLockedUntil() != null) {
-            user.setFailedLoginAttempts(0);
-            user.setLockedUntil(null);
-            userRepository.save(user);
-        }
     }
 }
