@@ -5,7 +5,7 @@
     display: grid;
     place-items: center;
     padding: $space-4;
-    background: $white;
+    background: #F5F8F8;
 }
 
 .login-panel {
@@ -13,6 +13,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: $space-6 $space-5;
+    border: 0.0625rem solid rgba($primary, 0.08);
+    border-radius: $border-radius-lg;
+    background: rgba($white, 0.92);
+    box-shadow: 0 1.5rem 3.75rem rgba($brand-rail, 0.08);
 }
 
 .login-header {
@@ -108,5 +113,9 @@
 @include mobile {
     .login-page {
         padding: $space-3;
+    }
+
+    .login-panel {
+        padding: $space-5 $space-4;
     }
 }
