@@ -28,6 +28,6 @@ public final class SecurityUtils {
 
     public static boolean isAdmin() {
         return currentAuth().getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }

@@ -10,9 +10,9 @@ import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
 
-import com.pointwest.prop.entity.User;
 import com.pointwest.prop.auth.model.Role;
 import com.pointwest.prop.auth.model.RolePermissions;
+import com.pointwest.prop.common.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
