@@ -7,8 +7,8 @@
   position: sticky;
   top: 0;
   height: $header-height;
-  background-color: $white;
-  border-bottom: 0.0625rem solid $border-color;
+  background-color: $body-color; // Applied `$body-color` as requested[cite: 11]
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.1); // Subtler border for dark header
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -34,6 +34,8 @@
     height: 2.25rem;
     width: auto;
     display: block;
+    // Optional: if your logo is dark and needs to stand out on a dark background, 
+    // you can apply brightness(0) invert(1) or use a white variant image.
   }
 }
 
@@ -49,14 +51,14 @@
       background: none;
       border: none;
       padding: 0;
-      color: $slate;
+      color: rgba(255, 255, 255, 0.75); // Lightened for contrast against dark background
       font-weight: 500;
       font-size: 0.9375rem;
       cursor: pointer;
       transition: color $transition-fast;
 
       &:hover {
-        color: $primary;
+        color: $white; // Brighter on hover
       }
     }
   }
@@ -72,8 +74,8 @@
   justify-content: center;
   gap: $space-2;
   background-color: transparent;
-  color: $primary;
-  border: 0.09375rem solid $primary;
+  color: $white; // Light text for dark header
+  border: 0.09375rem solid rgba(255, 255, 255, 0.3);
   border-radius: $border-radius;
   font-weight: 600;
   font-size: 0.875rem;
@@ -87,7 +89,8 @@
   }
 
   &:hover {
-    background-color: $primary;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: $white;
     color: $white;
   }
 }
@@ -106,42 +109,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem $space-4 8rem; // Increased bottom padding shifts content upward
+  padding: 2rem $space-4 8rem;
   text-align: center;
   position: relative;
   overflow: hidden;
-  background-color: white;
+  background-color: $body-bg;
 
   .hero-container {
-  max-width: 50rem;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
+    max-width: 50rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-4;
 
-  // 1. Convert to a vertical flex column with unified spacing
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: $space-4; // Default gap between all children (~1.5rem / 24px)
-
-  // 2. Remove default / colliding bottom margins
-  .hero-badge {
-    margin-bottom: 0; // Handled by container gap
+    .hero-badge {
+      margin-bottom: 0;
+    }
+    .hero-title {
+      margin-bottom: 0;
+    }
+    .hero-paragraph {
+      margin-bottom: 0;
+      max-width: 45rem;
+    }
+    .hero-actions {
+      margin-top: $space-2;
+    }
   }
-
-  .hero-title {
-    margin-bottom: 0; // Handled by container gap
-  }
-
-  .hero-paragraph {
-    margin-bottom: 0; // Handled by container gap
-    max-width: 45rem;
-  }
-
-  .hero-actions {
-    margin-top: $space-2; // Optional extra breathing room before the CTAs
-  }
-}
 
   .hero-badge {
     display: inline-flex;
