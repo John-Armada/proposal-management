@@ -5,7 +5,7 @@
     display: grid;
     place-items: center;
     padding: $space-4;
-    background: #F5F8F8;
+    background-color: var(--body-bg);
 }
 
 .login-panel {
@@ -28,7 +28,7 @@
         margin: 0 0 $space-1;
         font-size: 1.75rem;
         color: $body-color;
-        font-weight: bold;
+        font-weight: var(--fw-bold);
     }
 
     p {
@@ -95,14 +95,14 @@
     padding: 0 $space-4;
     border: 0;
     border-radius: $border-radius-pill;
-    background: $gdocs-blue;
+    background: $primary;
     color: $white;
     font-weight: var(--fw-semibold);
     cursor: pointer;
     transition: background $transition-fast, transform $transition-fast;
 
     &:hover {
-        background: #2f73e8;
+        background: $brand-rail;
     }
 
     &:active {
