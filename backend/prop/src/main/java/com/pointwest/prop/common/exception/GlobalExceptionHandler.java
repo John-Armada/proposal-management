@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,6 +20,13 @@ public class GlobalExceptionHandler {
         @ExceptionHandler(ResourceNotFoundException.class)
         public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
                         ResourceNotFoundException ex, HttpServletRequest request) {
+                log.warn("Resource not found on {}", request.getRequestURI());
+                return build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+        }
+
+        @ExceptionHandler(EntityNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
+                        EntityNotFoundException ex, HttpServletRequest request) {
                 log.warn("Resource not found on {}", request.getRequestURI());
                 return build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
         }

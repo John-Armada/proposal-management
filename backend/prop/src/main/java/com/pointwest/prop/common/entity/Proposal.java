@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,12 +23,26 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "proposals")
+@Table(name = "proposals",
+    indexes = {
+        @Index(name = "idx_proposal_account_status", columnList = "account_id, status"),
+        @Index(name = "idx_proposal_contract_val", columnList = "contract_value"),
+        @Index(name = "idx_proposal_dept_offering", columnList = "department_id, offering_id"),
+        @Index(name = "idx_proposal_request_id", columnList = "request_id")
+    }
+)
 public class Proposal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //adding these two fields based on BRD
+    @Column(nullable = false)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Column(nullable = false)
     private String status;
