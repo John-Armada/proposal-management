@@ -8,15 +8,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.pointwest.prop.accounts.entity.Account;
+import com.pointwest.prop.accounts.repository.AccountRepository;
 import com.pointwest.prop.auth.model.Role;
 import com.pointwest.prop.common.entity.Department;
-import com.pointwest.prop.common.entity.Account;
+
 import com.pointwest.prop.common.entity.Offering;
-import com.pointwest.prop.common.entity.ProposalRequest;
+
 import com.pointwest.prop.common.entity.User;
-import com.pointwest.prop.intake.repository.AccountRepository;
+
 import com.pointwest.prop.common.repository.DepartmentRepository;
 import com.pointwest.prop.common.repository.OfferingRepository;
+import com.pointwest.prop.intake.entity.ProposalRequest;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 import com.pointwest.prop.common.repository.UserRepository;
 

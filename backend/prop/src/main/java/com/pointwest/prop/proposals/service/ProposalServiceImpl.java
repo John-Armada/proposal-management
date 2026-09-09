@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pointwest.prop.common.entity.Account;
+import com.pointwest.prop.accounts.entity.Account;
 import com.pointwest.prop.common.entity.Category;
 import com.pointwest.prop.common.entity.Department;
 import com.pointwest.prop.common.entity.Offering;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.pointwest.prop.common.entity.Proposal;
-import com.pointwest.prop.common.entity.ProposalRequest;
 import com.pointwest.prop.common.entity.ProposalVersion;
 import com.pointwest.prop.common.entity.Template;
 import com.pointwest.prop.common.mapper.ProposalMapper;
@@ -26,7 +25,8 @@ import com.pointwest.prop.common.repository.DepartmentRepository;
 import com.pointwest.prop.common.repository.OfferingRepository;
 import com.pointwest.prop.common.repository.ProposalVersionRepository;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
-import com.pointwest.prop.intake.repository.AccountRepository;
+import com.pointwest.prop.intake.entity.ProposalRequest;
+import com.pointwest.prop.accounts.repository.AccountRepository;
 import com.pointwest.prop.proposals.dto.CreateProposalRequestDto;
 import com.pointwest.prop.proposals.dto.ProposalResponseDto;
 import com.pointwest.prop.proposals.dto.UpdateProposalRequestDto;
