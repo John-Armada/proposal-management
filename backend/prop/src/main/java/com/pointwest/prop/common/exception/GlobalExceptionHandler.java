@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -35,6 +36,17 @@ public class GlobalExceptionHandler {
                         BadRequestException ex, HttpServletRequest request) {
                 log.warn("Bad request on {}", request.getRequestURI());
                 return build(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+                        MethodArgumentNotValidException ex, HttpServletRequest request) {
+                String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                                .findFirst()
+                                .orElse("Validation failed");
+                log.warn("Validation failure on {}: {}", request.getRequestURI(), errorMessage);
+                return build(HttpStatus.BAD_REQUEST, errorMessage, request);
         }
 
         @ExceptionHandler(AccessDeniedException.class)
