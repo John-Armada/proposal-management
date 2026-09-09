@@ -1,6 +1,9 @@
 <!-- src/app/features/admin/components/user-management/user-management.component.html -->
 
-<div class="container-fluid p-3 p-md-4">
+<div class="user-management-shell">
+    <app-sidebar [navItems]="navItems" />
+
+    <main class="user-management-content container-fluid p-3 p-md-4">
     <!-- Header -->
     <div
         class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
@@ -91,6 +94,7 @@
         </div>
         }
     </div>
+    </main>
 </div>
 
 <!-- User Create / Edit Modal -->
