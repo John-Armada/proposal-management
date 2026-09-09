@@ -18,8 +18,8 @@ import com.pointwest.prop.pricing.dto.LineItemResponseDto;
 import com.pointwest.prop.pricing.mapper.LineItemMapper;
 import com.pointwest.prop.pricing.repository.CatalogItemRepository;
 import com.pointwest.prop.pricing.repository.LineItemRepository;
-import com.pointwest.prop.common.repository.ProposalRepository;
 import com.pointwest.prop.pricing.util.PricingCalculator;
+import com.pointwest.prop.proposals.repository.ProposalRepository;
 
 import lombok.RequiredArgsConstructor;
 

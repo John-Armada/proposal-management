@@ -14,10 +14,10 @@ import com.pointwest.prop.common.entity.Account;
 import com.pointwest.prop.common.entity.Offering;
 import com.pointwest.prop.common.entity.ProposalRequest;
 import com.pointwest.prop.common.entity.User;
-import com.pointwest.prop.common.repository.AccountRepository;
+import com.pointwest.prop.intake.repository.AccountRepository;
 import com.pointwest.prop.common.repository.DepartmentRepository;
 import com.pointwest.prop.common.repository.OfferingRepository;
-import com.pointwest.prop.common.repository.ProposalRequestRepository;
+import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 import com.pointwest.prop.common.repository.UserRepository;
 
 @Configuration
@@ -35,15 +35,15 @@ public class DataSeeder {
             List<Department> departments;
             if (departmentRepository.count() == 0) {
             departments = List.of(
-                new Department(null, "IT", "Human Resources", "Handles recruiting, onboarding, and employee relations.",
+                new Department(null, "HR", "Human Resources", "Handles recruiting, onboarding, and employee relations.",
                     true),
                 new Department(null, "IT", "Information Technology",
                     "Manages IT infrastructure, software development, and security.", true),
-                new Department(null, "IT", "Finance & Accounting",
+                new Department(null, "FIN", "Finance & Accounting",
                     "Oversees financial planning, budgeting, and accounting.", true),
-                new Department(null, "IT", "Marketing & Sales",
+                new Department(null, "MKT", "Marketing & Sales",
                     "Drives customer acquisition, brand awareness, and revenue.", true),
-                new Department(null, "IT", "Operations & Logistics",
+                new Department(null, "OPS", "Operations & Logistics",
                     "Coordinates daily operations, supply chain, and workflows.", true));
             departments = departmentRepository.saveAll(departments);
             } else {
