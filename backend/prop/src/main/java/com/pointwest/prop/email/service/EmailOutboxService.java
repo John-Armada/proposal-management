@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pointwest.prop.email.entity.EmailEvent;
+import com.pointwest.prop.email.entity.EmailOutbox;
 import com.pointwest.prop.email.repository.EmailOutboxRepository;
-import com.pointwest.prop.entity.EmailEvent;
-import com.pointwest.prop.entity.EmailOutbox;
 
 import lombok.RequiredArgsConstructor;
 

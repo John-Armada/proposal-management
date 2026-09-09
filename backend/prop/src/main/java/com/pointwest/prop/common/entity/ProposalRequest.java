@@ -21,7 +21,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "proposal_requests")
+@Table(name = "proposal_requests", indexes = {
+    @jakarta.persistence.Index(name = "idx_pr_deadline_status", columnList = "deadline, status"),
+    @jakarta.persistence.Index(name = "idx_pr_dept_offering", columnList = "department_id, offering_id")
+})
 public class ProposalRequest {
 
     @Id

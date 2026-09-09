@@ -14,10 +14,10 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pointwest.prop.email.config.EmailProperties;
+import com.pointwest.prop.email.entity.EmailEvent;
+import com.pointwest.prop.email.entity.EmailOutbox;
+import com.pointwest.prop.email.entity.EmailStatus;
 import com.pointwest.prop.email.repository.EmailOutboxRepository;
-import com.pointwest.prop.entity.EmailEvent;
-import com.pointwest.prop.entity.EmailOutbox;
-import com.pointwest.prop.entity.EmailStatus;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

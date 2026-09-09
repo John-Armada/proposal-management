@@ -1,0 +1,32 @@
+// src/app/features/admin/components/user-management/user-management.component.scss
+
+// Variables
+$backdrop-bg: rgba(0, 0, 0, 0.5);
+$required-color: #dc3545;
+$mobile-breakpoint: 576px;
+
+// Modal Backdrop Setup
+.backdrop-show {
+    background: $backdrop-bg;
+}
+
+// Form Labels & Validation Indicators
+.required {
+    &::after {
+        content: " *";
+        color: $required-color;
+    }
+}
+
+// Tier 2 Mobile Responsiveness Optimizations
+@media (max-width: $mobile-breakpoint) {
+    .table-responsive {
+        font-size: 0.875rem;
+
+        .btn-group,
+        .btn-sm {
+            padding: 0.25rem 0.4rem;
+            font-size: 0.75rem;
+        }
+    }
+}
