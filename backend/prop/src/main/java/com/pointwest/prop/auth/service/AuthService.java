@@ -1,5 +1,7 @@
 package com.pointwest.prop.auth.service;
 
+import java.time.Instant;
+
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,10 +11,13 @@ import com.pointwest.prop.auth.dto.AuthResponseDto;
 import com.pointwest.prop.auth.dto.LoginRequestDto;
 import com.pointwest.prop.auth.jwt.JwtProperties;
 import com.pointwest.prop.auth.jwt.JwtService;
+import com.pointwest.prop.common.entity.RevokedToken;
 import com.pointwest.prop.common.entity.User;
 import com.pointwest.prop.common.exception.AccountLockedException;
+import com.pointwest.prop.common.repository.RevokedTokenRepository;
 import com.pointwest.prop.common.repository.UserRepository;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +31,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final JwtProperties jwtProperties;
     private final LoginAttemptService loginAttemptService;
+    private final RevokedTokenRepository revokedTokens;
 
     @Transactional(readOnly = true)
     public AuthResponseDto login(LoginRequestDto request) {
@@ -36,6 +42,7 @@ public class AuthService {
             throw new AccountLockedException(
                     "This account is locked due to too many failed login attempts. Please try again later.");
         }
+
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             LockoutResult result = loginAttemptService.registerFailedAttempt(user.getUserId());
@@ -59,5 +66,27 @@ public class AuthService {
                 accessToken,
                 "Bearer",
                 jwtProperties.getAccessTokenTtlMinutes() * 60);
+    }
+
+    @Transactional
+    public void logout(String authHeader) {
+        String token = extractBearerToken(authHeader);
+
+        Claims claims = jwtService.parseAndValidate(token);
+
+        String jti = claims.getId();
+        Instant expiresAt = claims.getExpiration().toInstant();
+
+        RevokedToken revokedToken = new RevokedToken(jti, expiresAt);
+
+        revokedTokens.save(revokedToken);
+    }
+
+    private String extractBearerToken(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new BadCredentialsException("Invalid Authorization header");
+        }
+
+        return authHeader.substring(7).trim();
     }
 }

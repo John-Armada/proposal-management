@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,6 +56,13 @@ public class GlobalExceptionHandler {
                         AuthenticationException ex, HttpServletRequest request) {
                 log.warn("Authentication failed on {}", request.getRequestURI());
                 return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
+        }
+
+        @ExceptionHandler(JwtException.class)
+        public ResponseEntity<ErrorResponse> handleJwtException(
+                        JwtException ex, HttpServletRequest request) {
+                log.warn("Invalid JWT on {}", request.getRequestURI());
+                return build(HttpStatus.UNAUTHORIZED, "Invalid or expired access token", request);
         }
 
         @ExceptionHandler(Exception.class)
