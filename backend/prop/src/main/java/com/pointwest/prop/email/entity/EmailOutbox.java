@@ -1,4 +1,4 @@
-package com.pointwest.prop.entity;
+package com.pointwest.prop.email.entity;
 
 import java.time.Instant;
 
