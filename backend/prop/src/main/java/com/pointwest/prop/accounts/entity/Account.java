@@ -1,4 +1,4 @@
-package com.pointwest.prop.common.entity;
+package com.pointwest.prop.accounts.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -2,6 +2,9 @@ package com.pointwest.prop.common.entity;
 
 import java.math.BigDecimal;
 
+import com.pointwest.prop.accounts.entity.Account;
+import com.pointwest.prop.intake.entity.ProposalRequest;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

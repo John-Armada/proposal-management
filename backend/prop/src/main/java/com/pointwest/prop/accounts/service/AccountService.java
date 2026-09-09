@@ -1,14 +1,14 @@
-package com.pointwest.prop.intake.service;
+package com.pointwest.prop.accounts.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.pointwest.prop.common.entity.Account;
+import com.pointwest.prop.accounts.entity.Account;
 import com.pointwest.prop.common.exception.ConflictException;
 import com.pointwest.prop.common.exception.ResourceNotFoundException;
-import com.pointwest.prop.intake.dto.AccountRequestDto;
-import com.pointwest.prop.intake.dto.AccountResponseDto;
-import com.pointwest.prop.intake.repository.AccountRepository;
+import com.pointwest.prop.accounts.dto.AccountRequestDto;
+import com.pointwest.prop.accounts.dto.AccountResponseDto;
+import com.pointwest.prop.accounts.repository.AccountRepository;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 import lombok.RequiredArgsConstructor;
 
