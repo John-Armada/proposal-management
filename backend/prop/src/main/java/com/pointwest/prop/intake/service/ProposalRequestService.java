@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pointwest.prop.auth.util.SecurityUtils;
-import com.pointwest.prop.common.entity.Account;
+import com.pointwest.prop.accounts.entity.Account;
 import com.pointwest.prop.common.entity.Department;
 import com.pointwest.prop.common.entity.Offering;
-import com.pointwest.prop.common.entity.ProposalRequest;
+import com.pointwest.prop.intake.entity.ProposalRequest;
 import com.pointwest.prop.common.entity.User;
 import com.pointwest.prop.common.exception.BadRequestException;
 import com.pointwest.prop.common.exception.ResourceNotFoundException;
@@ -19,7 +19,7 @@ import com.pointwest.prop.common.repository.OfferingRepository;
 import com.pointwest.prop.common.repository.UserRepository;
 import com.pointwest.prop.intake.dto.ProposalRequestCreateDto;
 import com.pointwest.prop.intake.dto.ProposalRequestResponseDto;
-import com.pointwest.prop.intake.repository.AccountRepository;
+import com.pointwest.prop.accounts.repository.AccountRepository;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 
 import lombok.RequiredArgsConstructor;

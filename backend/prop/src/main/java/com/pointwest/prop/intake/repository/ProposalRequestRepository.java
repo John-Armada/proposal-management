@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;   
 
-import com.pointwest.prop.common.entity.ProposalRequest;
+import com.pointwest.prop.intake.entity.ProposalRequest;
 
 @Repository
 public interface ProposalRequestRepository extends JpaRepository<ProposalRequest, Long> {

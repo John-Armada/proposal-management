@@ -1,5 +1,4 @@
-package com.pointwest.prop.intake.controller;
-
+package com.pointwest.prop.accounts.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -14,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pointwest.prop.intake.dto.AccountRequestDto;
-import com.pointwest.prop.intake.dto.AccountResponseDto;
-import com.pointwest.prop.intake.service.AccountService;
+import com.pointwest.prop.accounts.dto.AccountRequestDto;
+import com.pointwest.prop.accounts.dto.AccountResponseDto;
+import com.pointwest.prop.accounts.service.AccountService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

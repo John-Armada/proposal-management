@@ -1,6 +1,11 @@
-package com.pointwest.prop.common.entity;
+package com.pointwest.prop.intake.entity;
 
 import java.time.LocalDate;
+
+import com.pointwest.prop.accounts.entity.Account;
+import com.pointwest.prop.common.entity.Department;
+import com.pointwest.prop.common.entity.Offering;
+import com.pointwest.prop.common.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +26,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+// !IMPORTANT: Need to Document
 @Table(name = "proposal_requests", indexes = {
     @jakarta.persistence.Index(name = "idx_pr_deadline_status", columnList = "deadline, status"),
     @jakarta.persistence.Index(name = "idx_pr_dept_offering", columnList = "department_id, offering_id")

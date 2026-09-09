@@ -1,4 +1,4 @@
-package com.pointwest.prop.intake.dto;
+package com.pointwest.prop.accounts.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
