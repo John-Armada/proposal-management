@@ -21,17 +21,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-
-    public JwtAuthFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
