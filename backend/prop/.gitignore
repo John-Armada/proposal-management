@@ -34,3 +34,5 @@ build/
 
 ### Environment Variables ###
 .env
+
+REVIEW_CREATE_REVIEW_FINDINGS.md
