@@ -1,5 +1,6 @@
 package com.pointwest.prop.pricing.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -13,4 +14,6 @@ public interface LineItemRepository extends JpaRepository<LineItem, Long> {
     Page<LineItem> findByProposalId(Long proposalId, Pageable pageable);
 
     Optional<LineItem> findByIdAndProposalId(Long id, Long proposalId);
+
+    List<LineItem> findAllByProposalId(Long proposalId);
 }
