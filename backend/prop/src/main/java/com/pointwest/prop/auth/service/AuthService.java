@@ -18,6 +18,7 @@ import com.pointwest.prop.common.repository.RevokedTokenRepository;
 import com.pointwest.prop.common.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +43,6 @@ public class AuthService {
             throw new AccountLockedException(
                     "This account is locked due to too many failed login attempts. Please try again later.");
         }
-
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             LockoutResult result = loginAttemptService.registerFailedAttempt(user.getUserId());
@@ -72,7 +72,12 @@ public class AuthService {
     public void logout(String authHeader) {
         String token = extractBearerToken(authHeader);
 
-        Claims claims = jwtService.parseAndValidate(token);
+        Claims claims;
+        try {
+            claims = jwtService.parseAndValidate(token);
+        } catch (ExpiredJwtException ex) {
+            claims = ex.getClaims();
+        }
 
         String jti = claims.getId();
         Instant expiresAt = claims.getExpiration().toInstant();

@@ -53,7 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             Claims claims = jwtService.parseAndValidate(token);
 
-            String id = claims.getId();
+            String jti = claims.getId();
             Role role = jwtService.extractRole(claims);
             Long userId = jwtService.extractUserId(claims);
             Long deptId = jwtService.extractDeptId(claims);
@@ -64,7 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .collect(Collectors.toList());
             authorities.add(new SimpleGrantedAuthority(role.authority()));
 
-            if (jwtService.isBlacklisted(id)) {
+            if (jwtService.isRevoked(jti)) {
                 throw new JwtException("Access token has been revoked.");
             }
 
