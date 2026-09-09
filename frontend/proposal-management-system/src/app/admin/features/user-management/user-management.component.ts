@@ -5,15 +5,26 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { UserService } from '../../service/user.service';
 import { DepartmentLookup, Role, User, UserCreatePayload, UserUpdatePayload } from '../../models/user.model';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { NavItem } from '../../../shared/models/nav-item.model';
+import { APP_ICONS } from '../../../core/icons/app-icons';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SidebarComponent],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
 export class UserManagementComponent implements OnInit {
+  readonly navItems: NavItem[] = [
+    {
+      label: 'User Management',
+      route: '/app/admin',
+      icon: APP_ICONS.users
+    }
+  ];
+
   readonly users = signal<User[]>([]);
   readonly activeDepartments = signal<DepartmentLookup[]>([]);
   readonly roles = Object.values(Role);
