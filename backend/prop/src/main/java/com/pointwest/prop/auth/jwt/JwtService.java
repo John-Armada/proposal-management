@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.pointwest.prop.auth.model.Role;
 import com.pointwest.prop.auth.model.RolePermissions;
 import com.pointwest.prop.common.entity.User;
+import com.pointwest.prop.common.repository.RevokedTokenRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -26,10 +27,12 @@ public class JwtService {
 
     private final SecretKey signingKey;
     private final JwtProperties properties;
+    private final RevokedTokenRepository revokedTokens;
 
-    public JwtService(JwtProperties properties) {
+    public JwtService(JwtProperties properties, RevokedTokenRepository revokedTokens) {
         this.properties = properties;
         this.signingKey = buildKey(properties.getSecret());
+        this.revokedTokens = revokedTokens;
     }
 
     private static SecretKey buildKey(String base64Secret) {
@@ -72,8 +75,7 @@ public class JwtService {
     }
 
     public boolean isBlacklisted (String id) {
-        //TODO: Call a repository to check if id exists in the appropriate table.
-        return true;
+        return revokedTokens.existsById(id);
     }
 
     public Role extractRole(Claims claims) {
