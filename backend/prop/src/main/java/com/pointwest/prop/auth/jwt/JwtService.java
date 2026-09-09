@@ -74,8 +74,8 @@ public class JwtService {
                 .getPayload();
     }
 
-    public boolean isBlacklisted (String id) {
-        return revokedTokens.existsById(id);
+    public boolean isRevoked(String jti) {
+        return revokedTokens.existsById(jti);
     }
 
     public Role extractRole(Claims claims) {

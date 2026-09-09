@@ -1,34 +1,41 @@
 <main class="login-page">
-    <section class="login-panel" aria-labelledby="login-title">
+    <div class="login-card">
+        <section class="login-showcase-card">
+            <img class="showcase-logo" src="/branding/logo-img.svg" alt="Proposal Management System logo" />
+        </section>
 
-        <header class="login-header">
-            <h1 id="login-title">Welcome Back!</h1>
-            <p>
-                Don't have an account yet?
-                <a href="#" class="auth-link">Sign up now</a>
-            </p>
-        </header>
+        <section class="login-form-card" aria-labelledby="login-title">
+            <header class="login-header">
+                <img class="form-logo" src="/branding/logo-img.svg" alt="" aria-hidden="true" />
+                <p class="app-name">Proposal Management System</p>
+                <h2 id="login-title">Welcome Back!</h2>
+                <p>Please log in to your account.</p>
+            </header>
 
-        <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
-            <div class="form-field">
-                <label class="sr-only" for="email">Email address</label>
-                <input id="email" name="email" type="email" autocomplete="email" placeholder="Email address"
-                    [(ngModel)]="credentials.email" required email />
-            </div>
+            <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+                <div class="form-field">
+                    <label for="email">Email Address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email"
+                        [(ngModel)]="credentials.email" required email />
+                </div>
 
-            <div class="form-field password-field">
-                <label class="sr-only" for="password">Password</label>
-                <input id="password" name="password" type="password" autocomplete="current-password"
-                    placeholder="Password" [(ngModel)]="credentials.password" required />
-            </div>
+                <div class="form-field password-field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password"
+                        placeholder="Enter your password" [(ngModel)]="credentials.password" required />
+                </div>
 
-            @if (loginError) {
+                @if (loginError) {
                 <p class="login-error" role="alert">{{ loginError }}</p>
-            }
+                }
 
-            <button class="login-button" type="submit" [disabled]="loginForm.invalid || isSubmitting">
-                {{ isSubmitting ? 'Logging in...' : 'Log in' }}
-            </button>
-        </form>
-    </section>
+                <div class="login-actions">
+                    <button class="login-button" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+                        {{ isSubmitting ? 'Logging in...' : 'Login' }}
+                    </button>
+                    <button class="create-account-button" type="button">Create account</button>
+                </div>
+            </form>
+        </section>
+    </div>
 </main>

@@ -21,17 +21,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-
-    public JwtAuthFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -53,7 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             Claims claims = jwtService.parseAndValidate(token);
 
-            String id = claims.getId();
+            String jti = claims.getId();
             Role role = jwtService.extractRole(claims);
             Long userId = jwtService.extractUserId(claims);
             Long deptId = jwtService.extractDeptId(claims);
@@ -64,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .collect(Collectors.toList());
             authorities.add(new SimpleGrantedAuthority(role.authority()));
 
-            if (jwtService.isBlacklisted(id)) {
+            if (jwtService.isRevoked(jti)) {
                 throw new JwtException("Access token has been revoked.");
             }
 

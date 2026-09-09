@@ -19,8 +19,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.pointwest.prop.auth.filter.JwtAuthFilter;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -29,14 +32,6 @@ public class SecurityConfig {
 
     @Value("${prop.cors.allowed-origins:http://localhost:4200}")
     private List<String> allowedOrigins;
-
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter,
-            RestAuthenticationEntryPoint restAuthenticationEntryPoint,
-            RestAccessDeniedHandler restAccessDeniedHandler) {
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
-        this.restAccessDeniedHandler = restAccessDeniedHandler;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

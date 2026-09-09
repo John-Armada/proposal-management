@@ -52,6 +52,9 @@ public class User {
     @JoinColumn(name = "department_id")
     private Department department;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
     @Column(name = "failed_login_attempts", nullable = false)
     private int failedLoginAttempts = 0;
 
