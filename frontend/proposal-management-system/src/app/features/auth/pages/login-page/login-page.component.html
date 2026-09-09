@@ -1,47 +1,41 @@
 <main class="login-page">
-    <section class="login-showcase-card" aria-labelledby="product-title">
-        <img class="showcase-logo" src="/branding/logo-img.svg" alt="Proposal Management System logo" />
+    <div class="login-card">
+        <section class="login-showcase-card">
+            <img class="showcase-logo" src="/branding/logo-img.svg" alt="Proposal Management System logo" />
+        </section>
 
-        <div class="showcase-copy">
-            <h1 id="product-title">Proposal Management System</h1>
-            <p>
-                Streamline account intake, standardizes Google Docs proposal templates, automates tiered review
-                approvals, and tracks line-item margins with precision.
-            </p>
-        </div>
-    </section>
+        <section class="login-form-card" aria-labelledby="login-title">
+            <header class="login-header">
+                <img class="form-logo" src="/branding/logo-img.svg" alt="" aria-hidden="true" />
+                <p class="app-name">Proposal Management System</p>
+                <h2 id="login-title">Welcome Back!</h2>
+                <p>Please log in to your account.</p>
+            </header>
 
-    <section class="login-form-card" aria-labelledby="login-title">
-        <header class="login-header">
-            <img class="form-logo" src="/branding/logo-img.svg" alt="" aria-hidden="true" />
-            <p class="app-name">Proposal Management System</p>
-            <h2 id="login-title">Welcome Back!</h2>
-            <p>Please log in to your account.</p>
-        </header>
+            <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+                <div class="form-field">
+                    <label for="email">Email Address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email"
+                        [(ngModel)]="credentials.email" required email />
+                </div>
 
-        <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
-            <div class="form-field">
-                <label for="email">Email Address</label>
-                <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email"
-                    [(ngModel)]="credentials.email" required email />
-            </div>
+                <div class="form-field password-field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password"
+                        placeholder="Enter your password" [(ngModel)]="credentials.password" required />
+                </div>
 
-            <div class="form-field password-field">
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" autocomplete="current-password"
-                    placeholder="Enter your password" [(ngModel)]="credentials.password" required />
-            </div>
+                @if (loginError) {
+                <p class="login-error" role="alert">{{ loginError }}</p>
+                }
 
-            @if (loginError) {
-            <p class="login-error" role="alert">{{ loginError }}</p>
-            }
-
-            <div class="login-actions">
-                <button class="login-button" type="submit" [disabled]="loginForm.invalid || isSubmitting">
-                    {{ isSubmitting ? 'Logging in...' : 'Login' }}
-                </button>
-                <a class="create-account-button" href="#">Create account</a>
-            </div>
-        </form>
-    </section>
+                <div class="login-actions">
+                    <button class="login-button" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+                        {{ isSubmitting ? 'Logging in...' : 'Login' }}
+                    </button>
+                    <button class="create-account-button" type="button">Create account</button>
+                </div>
+            </form>
+        </section>
+    </div>
 </main>

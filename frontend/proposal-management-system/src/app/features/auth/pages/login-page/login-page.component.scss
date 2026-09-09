@@ -2,12 +2,23 @@
 
 .login-page {
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-6 $space-4;
+    background: $body-bg;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 64rem;
+    max-height: 40rem;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: stretch;
-    gap: 0;
-    padding: 0;
-    background: $body-bg;
+    border-radius: $border-radius-lg;
+    box-shadow: 0 1.5rem 3rem rgba($primary, 0.16);
+    overflow: hidden;
 }
 
 .login-showcase-card,
@@ -15,17 +26,14 @@
     display: flex;
     flex-direction: column;
     border: 0.0625rem solid rgba($primary, 0.08);
-    border-radius: 0;
-    box-shadow: none;
     overflow: hidden;
 }
 
 .login-showcase-card {
-    min-height: 100vh;
     align-items: center;
     justify-content: center;
     padding: $space-6 $space-5;
-    background: #A9CDBE;
+    background: $body-color;
     color: $white;
     text-align: center;
 }
@@ -37,29 +45,10 @@
     margin-bottom: $space-5;
 }
 
-.showcase-copy {
-    max-width: 20rem;
-
-    h1 {
-        margin: 0 0 $space-2;
-        color: $white;
-        font-size: 1.5rem;
-        font-weight: var(--fw-bold);
-        letter-spacing: 0;
-    }
-
-    p {
-        margin: 0;
-        color: rgba($white, 0.84);
-        font-size: 0.8125rem;
-        line-height: 1.45;
-    }
-}
-
 .login-form-card {
-    min-height: 100vh;
     justify-content: center;
-    padding: $space-6 clamp($space-5, 7vw, 7rem);
+    overflow-y: auto;
+    padding: $space-6 clamp($space-5, 5vw, 4.5rem);
     background: rgba($white, 0.96);
 }
 
@@ -130,8 +119,7 @@
         }
 
         &:focus {
-            border-color: $primary;
-            box-shadow: 0 0 0 0.2rem rgba($primary, 0.12);
+            box-shadow: 0 0 0 0.2rem rgba($input-field, 1.5);
             outline: none;
         }
     }
@@ -196,9 +184,10 @@
     border-radius: $border-radius;
     background: $white;
     color: $body-color;
+    font-family: inherit;
     font-size: 0.875rem;
     font-weight: var(--fw-semibold);
-    text-decoration: none;
+    cursor: pointer;
     transition: border-color $transition-fast, color $transition-fast, transform $transition-fast;
 
     &:hover {
@@ -213,12 +202,15 @@
 
 @include mobile {
     .login-page {
+        padding: $space-4 $space-3;
+    }
+
+    .login-card {
         grid-template-columns: 1fr;
-        min-height: auto;
+        max-height: none;
     }
 
     .login-showcase-card {
-        min-height: 45vh;
         padding: $space-5 $space-4;
     }
 
@@ -228,7 +220,6 @@
     }
 
     .login-form-card {
-        min-height: 55vh;
         padding: $space-5 $space-4;
     }
 
