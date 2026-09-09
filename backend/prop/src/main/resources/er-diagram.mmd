@@ -25,11 +25,15 @@ erDiagram
     }
     User {
         int id PK
-        string name
+        string first_name
+        string last_name
         string email
         string password_hash
         string role
         int department_id FK
+        boolean active
+        int failed_login_attempts
+        timestamp locked_until
     }
     Category {
         int id PK
