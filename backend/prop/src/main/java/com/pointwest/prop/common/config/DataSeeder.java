@@ -25,15 +25,15 @@ public class DataSeeder {
 
             // 1. Define Departments
             List<Department> departments = List.of(
-                    new Department(null, "Human Resources", "Handles recruiting, onboarding, and employee relations.",
+                    new Department(null, "HR", "Human Resources", "Handles recruiting, onboarding, and employee relations.",
                             true),
-                    new Department(null, "Information Technology",
+                    new Department(null, "IT" , "Information Technology",
                             "Manages IT infrastructure, software development, and security.", true),
-                    new Department(null, "Finance & Accounting",
+                    new Department(null, "FIN", "Finance & Accounting",
                             "Oversees financial planning, budgeting, and accounting.", true),
-                    new Department(null, "Marketing & Sales",
+                    new Department(null, "MKT", "Marketing & Sales",
                             "Drives customer acquisition, brand awareness, and revenue.", true),
-                    new Department(null, "Operations & Logistics",
+                    new Department(null, "OPS", "Operations & Logistics",
                             "Coordinates daily operations, supply chain, and workflows.", true));
 
             departments = departmentRepository.saveAll(departments);
@@ -59,6 +59,7 @@ public class DataSeeder {
                         user.setPasswordHash(defaultPasswordHash);
                         user.setRole(role);
                         user.setDepartment(dept);
+                        user.setActive(true);
                         user.setFailedLoginAttempts(0);
                         user.setLockedUntil(null);
 
