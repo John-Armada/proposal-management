@@ -10,6 +10,17 @@ $mobile-breakpoint: 576px;
     background: $backdrop-bg;
 }
 
+.user-management-shell {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f8f8;
+}
+
+.user-management-content {
+    min-width: 0;
+    flex: 1;
+}
+
 // Form Labels & Validation Indicators
 .required {
     &::after {
