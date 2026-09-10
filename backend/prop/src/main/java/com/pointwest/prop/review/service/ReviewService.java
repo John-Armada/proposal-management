@@ -5,11 +5,10 @@ import java.time.Instant;
 import org.springframework.stereotype.Service;
 
 import com.pointwest.prop.review.dto.ReviewResponseDto;
-import com.pointwest.prop.admin.service.UserService;
 import com.pointwest.prop.proposals.repository.ProposalRepository;
 import com.pointwest.prop.common.entity.Review;
-import com.pointwest.prop.common.entity.User;
-import com.pointwest.prop.common.repository.UserRepository;
+import com.pointwest.prop.user.entity.User;
+import com.pointwest.prop.user.repository.UserRepository;
 import com.pointwest.prop.common.entity.Proposal;
 import com.pointwest.prop.review.mapper.ReviewMapper;
 import com.pointwest.prop.review.dto.ReviewRequestDto;

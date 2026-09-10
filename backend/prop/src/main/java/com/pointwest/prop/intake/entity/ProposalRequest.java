@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import com.pointwest.prop.accounts.entity.Account;
 import com.pointwest.prop.common.entity.Department;
 import com.pointwest.prop.common.entity.Offering;
-import com.pointwest.prop.common.entity.User;
+import com.pointwest.prop.user.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
