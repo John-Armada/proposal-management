@@ -5,7 +5,7 @@ import { environment } from '../../../../environments/environment';
 export const apiBaseUrlInterceptor: HttpInterceptorFn = (request, next) => {
   const isApiRequest = request.url === '/api' || request.url.startsWith('/api/');
 
-  if (!isApiRequest) {
+  if (!isApiRequest || !environment.apiBaseUrl) {
     return next(request);
   }
 
