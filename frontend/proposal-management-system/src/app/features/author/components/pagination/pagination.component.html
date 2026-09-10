@@ -1,0 +1,16 @@
+@if (page()) {
+<nav class="pagination" aria-label="Pagination">
+    <span class="pagination__range text-meta">{{ rangeLabel() }}</span>
+    <div class="pagination__controls">
+        <button type="button" class="btn btn-outline-secondary btn-sm" [disabled]="page()!.first" (click)="previous()">
+            Previous
+        </button>
+        <span class="pagination__page text-mono">
+            {{ page()!.empty ? 0 : page()!.number + 1 }} / {{ page()!.totalPages || 1 }}
+        </span>
+        <button type="button" class="btn btn-outline-secondary btn-sm" [disabled]="page()!.last" (click)="next()">
+            Next
+        </button>
+    </div>
+</nav>
+}
