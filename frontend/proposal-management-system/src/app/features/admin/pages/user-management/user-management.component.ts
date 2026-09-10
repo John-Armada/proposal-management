@@ -1,22 +1,20 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { UserService } from '../../service/user.service';
-import { DepartmentLookup, Role, User, UserCreatePayload, UserUpdatePayload } from '../../models/user.model';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { Navbar } from '../../../shared/components/navbar/navbar.component';
-import { DataTable } from '../../../shared/components/data-table/data-table.component';
-import { DataTableColumn } from '../../../shared/components/data-table/data-table.model';
-import { NavItem } from '../../../shared/models/nav-item.model';
-import { APP_ICONS } from '../../../core/icons/app-icons';
+import { DepartmentLookup, Role, User, UserCreatePayload } from '../../models/user.model';
+import { SidebarComponent } from '../../../../shared/components/sidebar/sidebar.component';
+import { Navbar } from '../../../../shared/components/navbar/navbar.component';
+import { DataTable } from '../../../../shared/components/data-table/data-table.component';
+import { DataTableColumn } from '../../../../shared/models/data-table.model';
+import { NavItem } from '../../../../shared/models/nav-item.model';
+import { APP_ICONS } from '../../../../core/icons/app-icons';
 
 @Component({
   selector: 'app-user-management',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SidebarComponent, Navbar, DataTable, FontAwesomeModule],
+  imports: [ReactiveFormsModule, SidebarComponent, Navbar, DataTable, FontAwesomeModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
@@ -60,9 +58,9 @@ export class UserManagementComponent implements OnInit {
   readonly totalPages = signal(0);
 
   // Modal / Form state
-  showModal = false;
-  isEditMode = false;
-  selectedUserId: number | null = null;
+  readonly showModal = signal(false);
+  readonly isEditMode = signal(false);
+  readonly selectedUserId = signal<number | null>(null);
   readonly userForm = inject(FormBuilder).nonNullable.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
@@ -104,17 +102,17 @@ export class UserManagementComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.isEditMode = false;
-    this.selectedUserId = null;
+    this.isEditMode.set(false);
+    this.selectedUserId.set(null);
     this.userForm.reset({ role: Role.AUTHOR, departmentId: 0 });
     this.userForm.get('password')?.setValidators([Validators.required]);
     this.userForm.get('password')?.updateValueAndValidity();
-    this.showModal = true;
+    this.showModal.set(true);
   }
 
   openEditModal(user: User): void {
-    this.isEditMode = true;
-    this.selectedUserId = user.userId;
+    this.isEditMode.set(true);
+    this.selectedUserId.set(user.userId);
     this.userForm.patchValue({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -124,11 +122,11 @@ export class UserManagementComponent implements OnInit {
     });
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
-    this.showModal = true;
+    this.showModal.set(true);
   }
 
   closeModal(): void {
-    this.showModal = false;
+    this.showModal.set(false);
     this.userForm.reset();
   }
 
@@ -138,9 +136,10 @@ export class UserManagementComponent implements OnInit {
       return;
     }
 
-    if (this.isEditMode && this.selectedUserId !== null) {
+    const selectedUserId = this.selectedUserId();
+    if (this.isEditMode() && selectedUserId !== null) {
       const { password: _, ...payload } = this.userForm.getRawValue();
-      this.userService.updateUser(this.selectedUserId, payload).subscribe({
+      this.userService.updateUser(selectedUserId, payload).subscribe({
         next: () => {
           this.closeModal();
           this.loadUsers();

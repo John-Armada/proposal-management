@@ -1,12 +1,12 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed">
+<aside class="sidebar" [class.collapsed]="isCollapsed()">
     <button type="button" class="toggle-btn" (click)="toggleSidebar()" aria-label="Toggle Navigation"
-        [attr.aria-expanded]="!isCollapsed">
-        <fa-icon [icon]="isCollapsed ? icons.chevronRight : icons.chevronLeft"></fa-icon>
+        [attr.aria-expanded]="!isCollapsed()">
+        <fa-icon [icon]="isCollapsed() ? icons.chevronRight : icons.chevronLeft"></fa-icon>
     </button>
 
     <div class="sidebar-header">
         <div class="logo-icon">
-            <img src="/branding/logo-img.svg" alt="Proposal Management System logo" />
+            <img ngSrc="/branding/logo-img.svg" width="42" height="42" alt="Proposal Management System logo" />
         </div>
         <div class="brand-text">
             <span class="title-main">PROPOSAL</span>
@@ -15,9 +15,9 @@
     </div>
 
     <nav class="nav-list">
-        @for (item of navItems; track item.route) {
+        @for (item of navItems(); track item.route) {
         <a [routerLink]="item.route" routerLinkActive="active" ariaCurrentWhenActive="page" class="nav-item"
-            [title]="isCollapsed ? item.label : ''">
+            [title]="isCollapsed() ? item.label : ''">
             <fa-icon class="nav-icon" [icon]="item.icon"></fa-icon>
             <span class="nav-label">{{ item.label }}</span>
             @if (item.badge) {

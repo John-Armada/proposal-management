@@ -3,38 +3,38 @@
         <table>
             <thead>
                 <tr>
-                    @for (column of columns; track column.key) {
+                    @for (column of columns(); track column.key) {
                     <th scope="col" [class.align-right]="columnAlign(column) === 'right'">
                         {{ column.header }}
                     </th>
                     }
-                    @if (rowActionsTemplate) {
+                    @if (rowActionsTemplate()) {
                     <th scope="col" class="align-right actions-col">Actions</th>
                     }
                 </tr>
             </thead>
             <tbody>
-                @if (loading) {
+                @if (loading()) {
                 <tr class="state-row">
-                    <td [attr.colspan]="columns.length + (rowActionsTemplate ? 1 : 0)">Loading…</td>
+                    <td [attr.colspan]="columns().length + (rowActionsTemplate() ? 1 : 0)">Loading…</td>
                 </tr>
-                } @else if (rows.length === 0) {
+                } @else if (rows().length === 0) {
                 <tr class="state-row">
-                    <td [attr.colspan]="columns.length + (rowActionsTemplate ? 1 : 0)">
+                    <td [attr.colspan]="columns().length + (rowActionsTemplate() ? 1 : 0)">
                         <div class="empty-state">
-                            <p>{{ emptyMessage }}</p>
-                            @if (emptyActionLabel) {
+                            <p>{{ emptyMessage() }}</p>
+                            @if (emptyActionLabel()) {
                             <button type="button" class="empty-action" (click)="emptyAction.emit()">
-                                {{ emptyActionLabel }}
+                                {{ emptyActionLabel() }}
                             </button>
                             }
                         </div>
                     </td>
                 </tr>
                 } @else {
-                @for (row of rows; track trackByFn($index, row)) {
+                @for (row of rows(); track trackByFn()($index, row)) {
                 <tr>
-                    @for (column of columns; track column.key) {
+                    @for (column of columns(); track column.key) {
                     <td [class.align-right]="columnAlign(column) === 'right'" [class.mono]="column.type === 'mono'">
                         @if (column.type === 'badge' && column.badge) {
                         @let badge = column.badge(row);
@@ -46,9 +46,9 @@
                         }
                     </td>
                     }
-                    @if (rowActionsTemplate) {
+                    @if (rowActionsTemplate()) {
                     <td class="align-right actions-col">
-                        <ng-container [ngTemplateOutlet]="rowActionsTemplate"
+                        <ng-container [ngTemplateOutlet]="rowActionsTemplate()"
                             [ngTemplateOutletContext]="{ $implicit: row }" />
                     </td>
                     }
@@ -60,19 +60,19 @@
     </div>
 
     <div class="data-table-cards">
-        @if (loading) {
+        @if (loading()) {
         <p class="state-message">Loading…</p>
-        } @else if (rows.length === 0) {
+        } @else if (rows().length === 0) {
         <div class="empty-state">
-            <p>{{ emptyMessage }}</p>
-            @if (emptyActionLabel) {
-            <button type="button" class="empty-action" (click)="emptyAction.emit()">{{ emptyActionLabel }}</button>
+            <p>{{ emptyMessage() }}</p>
+            @if (emptyActionLabel()) {
+            <button type="button" class="empty-action" (click)="emptyAction.emit()">{{ emptyActionLabel() }}</button>
             }
         </div>
         } @else {
-        @for (row of rows; track trackByFn($index, row)) {
+        @for (row of rows(); track trackByFn()($index, row)) {
         <div class="data-card">
-            @for (column of columns; track column.key) {
+            @for (column of columns(); track column.key) {
             <div class="data-card-row">
                 <span class="data-card-label">{{ column.header }}</span>
                 @if (column.type === 'badge' && column.badge) {
@@ -86,9 +86,9 @@
                 }
             </div>
             }
-            @if (rowActionsTemplate) {
+            @if (rowActionsTemplate()) {
             <div class="data-card-actions">
-                <ng-container [ngTemplateOutlet]="rowActionsTemplate" [ngTemplateOutletContext]="{ $implicit: row }" />
+                <ng-container [ngTemplateOutlet]="rowActionsTemplate()" [ngTemplateOutletContext]="{ $implicit: row }" />
             </div>
             }
         </div>
@@ -98,31 +98,31 @@
 
     <div class="data-table-footer">
         <p class="range-summary">
-            @if (totalElements === 0) {
+            @if (totalElements() === 0) {
             Showing 0 of 0
             } @else {
-            Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalElements }}
+            Showing {{ rangeStart() }}–{{ rangeEnd() }} of {{ totalElements() }}
             }
         </p>
 
         <div class="footer-controls">
             <label class="page-size">
                 <span>Rows per page</span>
-                <select [value]="pageSize" (change)="onPageSizeChange(+$any($event.target).value)">
-                    @for (size of pageSizeOptions; track size) {
+                <select [value]="pageSize()" (change)="onPageSizeSelect($event)">
+                    @for (size of pageSizeOptions(); track size) {
                     <option [value]="size">{{ size }}</option>
                     }
                 </select>
             </label>
 
             <div class="pager">
-                <button type="button" class="pager-btn" [disabled]="page === 0" aria-label="Previous page"
-                    (click)="goToPage(page - 1)">
+                <button type="button" class="pager-btn" [disabled]="page() === 0" aria-label="Previous page"
+                    (click)="goToPage(page() - 1)">
                     <fa-icon [icon]="icons.chevronLeft"></fa-icon>
                 </button>
-                <span class="pager-current">Page {{ page + 1 }} of {{ totalPages }}</span>
-                <button type="button" class="pager-btn" [disabled]="page + 1 >= totalPages" aria-label="Next page"
-                    (click)="goToPage(page + 1)">
+                <span class="pager-current">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+                <button type="button" class="pager-btn" [disabled]="page() + 1 >= totalPages()" aria-label="Next page"
+                    (click)="goToPage(page() + 1)">
                     <fa-icon [icon]="icons.chevronRight"></fa-icon>
                 </button>
             </div>

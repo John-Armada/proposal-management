@@ -1,13 +1,12 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, ContentChild, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, computed, contentChild, input, output, TemplateRef } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { APP_ICONS } from '../../../core/icons/app-icons';
-import { DataTableColumn, DataTableColumnAlign } from './data-table.model';
+import { DataTableColumn, DataTableColumnAlign } from '../../models/data-table.model';
 
 @Component({
   selector: 'app-data-table',
-  standalone: true,
   imports: [NgTemplateOutlet, FontAwesomeModule],
   styleUrl: './data-table.component.scss',
   templateUrl: './data-table.component.html',
@@ -15,36 +14,35 @@ import { DataTableColumn, DataTableColumnAlign } from './data-table.model';
 export class DataTable<T = Record<string, unknown>> {
   protected readonly icons = APP_ICONS;
 
-  @Input({ required: true }) columns: DataTableColumn<T>[] = [];
-  @Input({ required: true }) rows: T[] = [];
-  @Input() trackByFn: (index: number, row: T) => unknown = (index) => index;
+  readonly columns = input.required<DataTableColumn<T>[]>();
+  readonly rows = input.required<T[]>();
+  readonly trackByFn = input<(index: number, row: T) => unknown>((index) => index);
 
-  @Input() loading = false;
-  @Input() emptyMessage = 'No records found.';
-  @Input() emptyActionLabel?: string;
-  @Output() emptyAction = new EventEmitter<void>();
+  readonly loading = input(false);
+  readonly emptyMessage = input('No records found.');
+  readonly emptyActionLabel = input<string>();
+  readonly emptyAction = output<void>();
 
-  @Input() page = 0;
-  @Input() pageSize = 10;
-  @Input() pageSizeOptions: number[] = [10, 25, 50, 100];
-  @Input() totalElements = 0;
-  @Output() pageChange = new EventEmitter<number>();
-  @Output() pageSizeChange = new EventEmitter<number>();
+  readonly page = input(0);
+  readonly pageSize = input(10);
+  readonly pageSizeOptions = input<number[]>([10, 25, 50, 100]);
+  readonly totalElements = input(0);
+  readonly pageChange = output<number>();
+  readonly pageSizeChange = output<number>();
 
-  @ContentChild('rowActions', { read: TemplateRef })
-  rowActionsTemplate?: TemplateRef<{ $implicit: T }>;
+  readonly rowActionsTemplate = contentChild<TemplateRef<{ $implicit: T }>>('rowActions');
 
-  get totalPages(): number {
-    return this.pageSize > 0 ? Math.max(1, Math.ceil(this.totalElements / this.pageSize)) : 1;
-  }
+  readonly totalPages = computed(() =>
+    this.pageSize() > 0 ? Math.max(1, Math.ceil(this.totalElements() / this.pageSize())) : 1
+  );
 
-  get rangeStart(): number {
-    return this.totalElements === 0 ? 0 : this.page * this.pageSize + 1;
-  }
+  readonly rangeStart = computed(() =>
+    this.totalElements() === 0 ? 0 : this.page() * this.pageSize() + 1
+  );
 
-  get rangeEnd(): number {
-    return Math.min(this.totalElements, this.page * this.pageSize + this.rows.length);
-  }
+  readonly rangeEnd = computed(() =>
+    Math.min(this.totalElements(), this.page() * this.pageSize() + this.rows().length)
+  );
 
   columnAlign(column: DataTableColumn<T>): DataTableColumnAlign {
     return column.align ?? (column.type === 'mono' ? 'right' : 'left');
@@ -59,13 +57,20 @@ export class DataTable<T = Record<string, unknown>> {
   }
 
   onPageSizeChange(size: number): void {
-    if (size !== this.pageSize) {
+    if (size !== this.pageSize()) {
       this.pageSizeChange.emit(size);
     }
   }
 
+  onPageSizeSelect(event: Event): void {
+    const target = event.target;
+    if (target instanceof HTMLSelectElement) {
+      this.onPageSizeChange(Number(target.value));
+    }
+  }
+
   goToPage(page: number): void {
-    if (page < 0 || page >= this.totalPages || page === this.page) {
+    if (page < 0 || page >= this.totalPages() || page === this.page()) {
       return;
     }
     this.pageChange.emit(page);

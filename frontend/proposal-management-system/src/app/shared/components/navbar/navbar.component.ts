@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output, computed, inject } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -9,6 +9,9 @@ import { NotificationItem } from '../../models/notification.model';
 @Component({
   imports: [FormsModule, FontAwesomeModule],
   selector: 'app-navbar',
+  host: {
+    '(document:keydown.escape)': 'onEscape()',
+  },
   styleUrl: './navbar.component.scss',
   templateUrl: './navbar.component.html',
 })
@@ -33,36 +36,35 @@ export class Navbar {
     return fromName || session.email[0]?.toUpperCase() || '?';
   });
 
-  @Input() notifications: NotificationItem[] = [];
-  @Output() search = new EventEmitter<string>();
+  readonly notifications = input<NotificationItem[]>([]);
+  readonly search = output<string>();
 
-  searchTerm = '';
-  isUserMenuOpen = false;
-  isNotificationsOpen = false;
+  readonly searchTerm = signal('');
+  readonly isUserMenuOpen = signal(false);
+  readonly isNotificationsOpen = signal(false);
 
   onSearchSubmit(): void {
-    const term = this.searchTerm.trim();
+    const term = this.searchTerm().trim();
     if (term) {
       this.search.emit(term);
     }
   }
 
   toggleUserMenu(): void {
-    this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isNotificationsOpen = false;
+    this.isUserMenuOpen.update((isOpen) => !isOpen);
+    this.isNotificationsOpen.set(false);
   }
 
   toggleNotifications(): void {
-    this.isNotificationsOpen = !this.isNotificationsOpen;
-    this.isUserMenuOpen = false;
+    this.isNotificationsOpen.update((isOpen) => !isOpen);
+    this.isUserMenuOpen.set(false);
   }
 
   closeMenus(): void {
-    this.isUserMenuOpen = false;
-    this.isNotificationsOpen = false;
+    this.isUserMenuOpen.set(false);
+    this.isNotificationsOpen.set(false);
   }
 
-  @HostListener('document:keydown.escape')
   onEscape(): void {
     this.closeMenus();
   }
