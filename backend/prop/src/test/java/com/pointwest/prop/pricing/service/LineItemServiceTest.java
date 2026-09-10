@@ -72,7 +72,9 @@ class LineItemServiceTest {
         when(proposalService.getProposalEntity(7L)).thenReturn(proposal);
         doAnswer(invocation -> null).when(mapper).updateEntityFromRequest(eq(request), any(LineItem.class));
 
-        assertThrows(BadRequestException.class, () -> service.createLineItem(7L, request));
+        var exception = assertThrows(BadRequestException.class, () -> service.createLineItem(7L, request));
+        assertEquals("description is required (the selected catalog item has no name to fall back on)",
+                exception.getMessage());
         verify(repository, never()).save(any());
     }
 
@@ -80,8 +82,9 @@ class LineItemServiceTest {
     void updateRequiresLineItemToBelongToProposal() {
         when(repository.findByIdAndProposalId(2L, 7L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class,
+        var exception = assertThrows(ResourceNotFoundException.class,
                 () -> service.updateLineItem(7L, 2L,
                         new LineItemRequestDto(null, "Support", BigDecimal.ONE, BigDecimal.TEN, null, null)));
+        assertEquals("LineItem not found with id: '2'", exception.getMessage());
     }
 }
