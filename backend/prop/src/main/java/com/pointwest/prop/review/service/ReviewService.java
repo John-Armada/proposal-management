@@ -6,7 +6,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.pointwest.prop.review.dto.ReviewResponseDto;
-import com.pointwest.prop.proposals.dto.UpdateProposalRequestDto;
 import com.pointwest.prop.proposals.enums.ProposalStatus;
 import com.pointwest.prop.proposals.service.ProposalService;
 import com.pointwest.prop.common.entity.Review;

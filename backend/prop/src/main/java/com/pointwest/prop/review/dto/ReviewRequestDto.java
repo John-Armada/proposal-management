@@ -1,6 +1,5 @@
 package com.pointwest.prop.review.dto;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 
 import com.pointwest.prop.common.entity.ReviewDecision;
@@ -19,10 +18,4 @@ public class ReviewRequestDto {
     private ReviewDecision decision;
 
     private String comment;
-
-    @NotNull
-    private Long proposalId;
-
-    @NotNull
-    private Long reviewerId;
 }
