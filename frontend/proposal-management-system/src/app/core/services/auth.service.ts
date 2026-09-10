@@ -29,23 +29,35 @@ export class AuthService {
         };
 
         return this.http.post<AuthResponse>('/api/auth/login', body)
-                        .pipe(
-                            map(response => this.buildSession(response)), 
-                                tap(session => {
-                                    this.persistSession(session);
-                                    this._session.set(session);
-                                    void this.router.navigateByUrl(this.routeForRole(session.role));
-                                })
-                        );
+            .pipe(
+                map(response => this.buildSession(response)),
+                tap(session => {
+                    this.persistSession(session);
+                    this._session.set(session);
+                    void this.router.navigateByUrl(this.routeForRole(session.role));
+                })
+            );
     }
 
-    logout() {
-        localStorage.removeItem(STORAGE_KEY);
-        this._session.set(null);
-        this.router.navigateByUrl('/login');
+    logout(): void {
+        const clearSessionAndRedirect = () => {
+            localStorage.removeItem(STORAGE_KEY);
+            this._session.set(null);
+            void this.router.navigateByUrl('/login');
+        };
+
+        if (!this.getAccessToken()) {
+            clearSessionAndRedirect();
+            return;
+        }
+
+        this.http.post<void>('/api/auth/logout', {}).subscribe({
+            next: clearSessionAndRedirect,
+            error: clearSessionAndRedirect
+        });
     }
 
-    private restoreSession (): AuthSession | null {
+    private restoreSession(): AuthSession | null {
         const token = localStorage.getItem(STORAGE_KEY);
 
         if (!token) {
@@ -70,7 +82,7 @@ export class AuthService {
         const roles = claims['roles'];
         const role = Array.isArray(roles) ? roles[0] : roles;
 
-        if (!isAppUserRole(role)){
+        if (!isAppUserRole(role)) {
             throw new Error(`Invalid role in access token: ${role}`);
         }
 
