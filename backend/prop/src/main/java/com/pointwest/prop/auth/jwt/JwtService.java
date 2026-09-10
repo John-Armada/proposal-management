@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.pointwest.prop.auth.model.Role;
 import com.pointwest.prop.auth.model.RolePermissions;
-import com.pointwest.prop.common.entity.User;
 import com.pointwest.prop.common.repository.RevokedTokenRepository;
+import com.pointwest.prop.user.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

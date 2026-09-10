@@ -1,8 +1,8 @@
 package com.pointwest.prop.common.config;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -12,22 +12,19 @@ import com.pointwest.prop.accounts.entity.Account;
 import com.pointwest.prop.accounts.repository.AccountRepository;
 import com.pointwest.prop.auth.model.Role;
 import com.pointwest.prop.common.entity.Department;
-
 import com.pointwest.prop.common.entity.Offering;
-
-import com.pointwest.prop.common.entity.User;
-
 import com.pointwest.prop.common.repository.DepartmentRepository;
 import com.pointwest.prop.common.repository.OfferingRepository;
 import com.pointwest.prop.intake.entity.ProposalRequest;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
-import com.pointwest.prop.common.repository.UserRepository;
+import com.pointwest.prop.user.entity.User;
+import com.pointwest.prop.user.repository.UserRepository;
 
 @Configuration
 public class DataSeeder {
 
     @Bean
-        public CommandLineRunner seedDatabase(
+    public CommandLineRunner seedDatabase(
             DepartmentRepository departmentRepository,
             UserRepository userRepository,
             AccountRepository accountRepository,
@@ -37,20 +34,21 @@ public class DataSeeder {
             // 1. Define Departments
             List<Department> departments;
             if (departmentRepository.count() == 0) {
-            departments = List.of(
-                new Department(null, "HR", "Human Resources", "Handles recruiting, onboarding, and employee relations.",
-                    true),
-                new Department(null, "IT", "Information Technology",
-                    "Manages IT infrastructure, software development, and security.", true),
-                new Department(null, "FIN", "Finance & Accounting",
-                    "Oversees financial planning, budgeting, and accounting.", true),
-                new Department(null, "MKT", "Marketing & Sales",
-                    "Drives customer acquisition, brand awareness, and revenue.", true),
-                new Department(null, "OPS", "Operations & Logistics",
-                    "Coordinates daily operations, supply chain, and workflows.", true));
-            departments = departmentRepository.saveAll(departments);
+                departments = List.of(
+                        new Department(null, "HR", "Human Resources",
+                                "Handles recruiting, onboarding, and employee relations.",
+                                true),
+                        new Department(null, "IT", "Information Technology",
+                                "Manages IT infrastructure, software development, and security.", true),
+                        new Department(null, "FIN", "Finance & Accounting",
+                                "Oversees financial planning, budgeting, and accounting.", true),
+                        new Department(null, "MKT", "Marketing & Sales",
+                                "Drives customer acquisition, brand awareness, and revenue.", true),
+                        new Department(null, "OPS", "Operations & Logistics",
+                                "Coordinates daily operations, supply chain, and workflows.", true));
+                departments = departmentRepository.saveAll(departments);
             } else {
-            departments = departmentRepository.findAll();
+                departments = departmentRepository.findAll();
             }
 
             List<User> usersToInsert = new ArrayList<>();
@@ -83,40 +81,40 @@ public class DataSeeder {
                 }
             }
 
-                if (userRepository.count() == 0) {
+            if (userRepository.count() == 0) {
                 userRepository.saveAll(usersToInsert);
-                }
+            }
 
-                Department itDepartment = departmentRepository.findByName("Information Technology")
+            Department itDepartment = departmentRepository.findByName("Information Technology")
                     .orElseThrow(() -> new IllegalStateException("Information Technology department was not seeded"));
-                User author = userRepository.findByEmailIgnoreCase("human.author1@company.com")
+            User author = userRepository.findByEmailIgnoreCase("human.author1@company.com")
                     .orElseThrow(() -> new IllegalStateException("Seed author was not created"));
 
-                Offering offering = offeringRepository.findByName("Software Development")
+            Offering offering = offeringRepository.findByName("Software Development")
                     .orElseGet(() -> offeringRepository.save(new Offering(
-                        null,
-                        "Software Development",
-                        "Custom software development and engineering services.",
-                        true)));
+                            null,
+                            "Software Development",
+                            "Custom software development and engineering services.",
+                            true)));
 
-                Account account = accountRepository.findByName("Acme Corporation")
+            Account account = accountRepository.findByName("Acme Corporation")
                     .orElseGet(() -> accountRepository.save(new Account(
-                        null,
-                        "Acme Corporation",
-                        "Technology",
-                        "contact@acme.example")));
+                            null,
+                            "Acme Corporation",
+                            "Technology",
+                            "contact@acme.example")));
 
-                if (proposalRequestRepository.count() == 0) {
+            if (proposalRequestRepository.count() == 0) {
                 proposalRequestRepository.save(new ProposalRequest(
-                    null,
-                    "Build a customer-facing proposal management portal.",
-                    LocalDate.now().plusDays(30),
-                    "OPEN",
-                    account,
-                    author,
-                    itDepartment,
-                    offering));
-                }
+                        null,
+                        "Build a customer-facing proposal management portal.",
+                        LocalDate.now().plusDays(30),
+                        "OPEN",
+                        account,
+                        author,
+                        itDepartment,
+                        offering));
+            }
         };
     }
 }

@@ -12,10 +12,10 @@ import com.pointwest.prop.auth.dto.LoginRequestDto;
 import com.pointwest.prop.auth.entity.RevokedToken;
 import com.pointwest.prop.auth.jwt.JwtProperties;
 import com.pointwest.prop.auth.jwt.JwtService;
-import com.pointwest.prop.common.entity.User;
 import com.pointwest.prop.common.exception.AccountLockedException;
 import com.pointwest.prop.common.repository.RevokedTokenRepository;
-import com.pointwest.prop.common.repository.UserRepository;
+import com.pointwest.prop.user.entity.User;
+import com.pointwest.prop.user.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

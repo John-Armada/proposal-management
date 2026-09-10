@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import com.pointwest.prop.user.entity.User;
 
-import com.pointwest.prop.common.entity.User;
-import com.pointwest.prop.common.repository.UserRepository;
+import com.pointwest.prop.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
