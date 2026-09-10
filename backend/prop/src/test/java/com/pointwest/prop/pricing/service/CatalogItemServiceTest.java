@@ -67,13 +67,16 @@ class CatalogItemServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(item));
         doThrow(new DataIntegrityViolationException("referenced")).when(repository).delete(item);
 
-        assertThrows(ConflictException.class, () -> service.deleteCatalogItem(1L));
+        var exception = assertThrows(ConflictException.class, () -> service.deleteCatalogItem(1L));
+        assertEquals("Catalog item is referenced by existing line items and cannot be deleted",
+                exception.getMessage());
     }
 
     @Test
     void missingCatalogItemIsReported() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> service.getCatalogItemEntity(99L));
+        var exception = assertThrows(ResourceNotFoundException.class, () -> service.getCatalogItemEntity(99L));
+        assertEquals("CatalogItem not found with id: '99'", exception.getMessage());
     }
 }
