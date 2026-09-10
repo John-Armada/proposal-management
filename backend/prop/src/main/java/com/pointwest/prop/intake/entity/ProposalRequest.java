@@ -37,27 +37,28 @@ public class ProposalRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "requirements_summary", columnDefinition = "TEXT")
+    @Column(name = "requirements_summary", columnDefinition = "TEXT", nullable = false)
     private String requirementsSummary;
 
+    @Column(nullable = false)
     private LocalDate deadline;
 
     @Column(nullable = false)
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_author_id")
+    @JoinColumn(name = "assigned_author_id", nullable = false)
     private User assignedAuthor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "offering_id")
+    @JoinColumn(name = "offering_id", nullable = false)
     private Offering offering;
 }
