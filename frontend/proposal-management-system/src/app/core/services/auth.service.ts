@@ -31,9 +31,13 @@ export class AuthService {
     return this.http.post<AuthResponse>('/api/auth/login', body).pipe(
       map((response) => this.buildSession(response)),
       tap((session) => {
+        const route = this.resolveLandingRoute(session);
+        if (route === '/login') {
+          throw new Error(`No frontend route is available for role: ${session.role}`);
+        }
         this.persistSession(session);
         this._session.set(session);
-        void this.router.navigateByUrl(this.routeForRole(session.role));
+        void this.router.navigateByUrl(route);
       }),
     );
   }
@@ -98,15 +102,8 @@ export class AuthService {
     };
   }
 
-  private routeForRole(role: AppUserRole): string {
-    switch (role) {
-      case 'ADMIN':
-        return '/app/admin';
-      case 'REVIEWER':
-        return '/app/reviewer';
-      case 'AUTHOR':
-        return '/app/author';
-    }
+  resolveLandingRoute(session: AuthSession): string {
+    return session.role === 'ADMIN' ? '/app/admin' : '/login';
   }
 
   private persistSession(session: AuthSession): void {
