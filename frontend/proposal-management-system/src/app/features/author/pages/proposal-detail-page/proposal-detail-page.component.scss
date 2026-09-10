@@ -1,0 +1,90 @@
+@use '../../../../../styles/abstracts' as *;
+
+.proposal-detail-page {
+    max-width: 75rem;
+
+    &__back {
+        display: inline-block;
+        margin-bottom: $space-2;
+        color: $slate;
+        text-decoration: none;
+
+        &:hover {
+            color: $primary;
+        }
+    }
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: $space-3;
+        margin-bottom: $space-4;
+
+        h1 {
+            margin-bottom: $space-2;
+        }
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: $space-2;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: $space-4;
+        align-items: start;
+
+        @include tablet {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__main {
+        display: flex;
+        flex-direction: column;
+        gap: $space-4;
+    }
+}
+
+.detail-card {
+    padding: $space-4;
+    background: $white;
+    border: 0.0625rem solid $border-color;
+    border-radius: $border-radius-lg;
+
+    h2 {
+        margin-bottom: $space-3;
+    }
+}
+
+.detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+    margin: $space-3 0 0;
+
+    &__row {
+        display: grid;
+        grid-template-columns: 10rem 1fr;
+        gap: $space-3;
+        padding: $space-2 0;
+        border-top: 0.0625rem solid $border-color;
+
+        &:first-child {
+            border-top: none;
+        }
+
+        dt {
+            margin: 0;
+        }
+
+        dd {
+            margin: 0;
+            color: $body-color;
+        }
+    }
+}

@@ -1,0 +1,90 @@
+@if (errorMessage()) {
+<div class="alert alert-danger" role="alert">{{ errorMessage() }}</div>
+}
+
+@if (proposal(); as proposal) {
+<section class="proposal-detail-page">
+    <header class="proposal-detail-page__header">
+        <div>
+            <a class="text-meta proposal-detail-page__back" routerLink="/proposals">← All proposals</a>
+            <h1>{{ proposal.title }}</h1>
+            <div class="proposal-detail-page__meta">
+                <app-proposal-status-badge [status]="proposal.status" />
+                <span class="text-meta">Version {{ proposal.currentVersion }}</span>
+            </div>
+        </div>
+        <a class="btn btn-outline-secondary" [routerLink]="['/proposals', proposal.id, 'edit']">
+            Edit
+        </a>
+    </header>
+
+    <div class="proposal-detail-page__grid">
+        <div class="proposal-detail-page__main">
+            <section class="detail-card">
+                <h2>Overview</h2>
+                <p class="text-body">{{ proposal.description || 'No description provided.' }}</p>
+
+                <dl class="detail-list">
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Account</dt>
+                        <dd>{{ proposal.accountName }}</dd>
+                    </div>
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Department</dt>
+                        <dd>{{ proposal.departmentName }}</dd>
+                    </div>
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Offering</dt>
+                        <dd>{{ proposal.offeringName }}</dd>
+                    </div>
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Category</dt>
+                        <dd>{{ proposal.categoryName || '—' }}</dd>
+                    </div>
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Template</dt>
+                        <dd>{{ proposal.templateName || '—' }}</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="detail-card">
+                <h2>Commercials</h2>
+                <dl class="detail-list">
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Contract value</dt>
+                        <dd class="currency">
+                            {{ proposal.contractValue != null ? (proposal.contractValue | currency) : '—' }}
+                        </dd>
+                    </div>
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Project duration</dt>
+                        <dd>{{ proposal.projectDuration ? proposal.projectDuration + ' months' : '—' }}</dd>
+                    </div>
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Total resources</dt>
+                        <dd>{{ proposal.totalResources ?? '—' }}</dd>
+                    </div>
+                    <div class="detail-list__row">
+                        <dt class="text-meta">Google Doc</dt>
+                        <dd>
+                            @if (proposal.googleDocUrl) {
+                            <a [href]="proposal.googleDocUrl" target="_blank" rel="noopener">Open document</a>
+                            } @else {
+                            —
+                            }
+                        </dd>
+                    </div>
+                </dl>
+            </section>
+        </div>
+
+        <aside class="proposal-detail-page__aside">
+            <app-proposal-review-panel [canReview]="canReview()" [isOwnProposal]="false"
+                [submitting]="reviewSubmitting()" (decide)="submitReview($event)" />
+        </aside>
+    </div>
+</section>
+} @else if (!errorMessage() && loading()) {
+<p class="text-body">Loading proposal…</p>
+}
