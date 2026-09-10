@@ -122,6 +122,15 @@ public class ProposalService {
         return proposalRepository.findAll(specification, pageable).map(proposalMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
+    public Proposal getRawProposalById(Long id) {
+        log.info("Fetching proposal with ID: {}", id);
+        
+        Proposal proposal = proposalRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Proposal not found with ID: " + id));
+                
+        return proposal;
+    }
     
     @Transactional(readOnly = true)
     public ProposalResponseDto getProposalById(Long id) {
@@ -159,6 +168,15 @@ public class ProposalService {
         Proposal updatedProposal = proposalRepository.save(existingProposal);
 
         return proposalMapper.toDto(updatedProposal);
+    }
+
+    @Transactional
+    public void updateStatus (Long id, ProposalStatus status){
+        Proposal proposal = proposalRepository.findById(id)
+                                              .orElseThrow(() -> new ResourceNotFoundException("Proposal", "id", id));
+        
+        proposal.setStatus(status);
+        proposalRepository.save(proposal);
     }
 
     

@@ -9,10 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.pointwest.prop.auth.jwt.JwtAuthenticationToken;
 import com.pointwest.prop.proposals.dto.CreateProposalRequestDto;
 import com.pointwest.prop.proposals.dto.ProposalResponseDto;
 import com.pointwest.prop.proposals.dto.UpdateProposalRequestDto;
 import com.pointwest.prop.proposals.service.ProposalService;
+import com.pointwest.prop.review.dto.ReviewRequestDto;
+import com.pointwest.prop.review.dto.ReviewResponseDto;
+import com.pointwest.prop.review.service.ReviewService;
 
 @RestController
 @RequestMapping("/api/v1/proposals")
@@ -21,6 +25,7 @@ import com.pointwest.prop.proposals.service.ProposalService;
 public class ProposalController {
 
     private final ProposalService proposalService;
+    private final ReviewService reviewService;
 
     @GetMapping
     public ResponseEntity<Page<ProposalResponseDto>> getProposals(
@@ -49,5 +54,16 @@ public class ProposalController {
             @Valid @RequestBody UpdateProposalRequestDto requestDto) {
         ProposalResponseDto updatedProposal = proposalService.updateProposal(id, requestDto);
         return ResponseEntity.ok(updatedProposal);
+    }
+
+    @PostMapping("/{id}/review")
+    public ResponseEntity<ReviewResponseDto> createReview(
+            @PathVariable Long id,
+            @Valid @RequestBody ReviewRequestDto request,
+            JwtAuthenticationToken authentication
+    ) {
+        Long reviewerId = authentication.getUserId();
+        ReviewResponseDto response = reviewService.createReview(id, reviewerId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

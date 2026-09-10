@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor 
 public class ReviewRequestDto {
-    // !Set Jakarta validation constraints for the fields below
+    // TODO: Set Jakarta validation constraints for the fields below
     // ?Size to be decided :)
     
     @NotNull
