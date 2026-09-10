@@ -103,7 +103,15 @@ export class AuthService {
   }
 
   resolveLandingRoute(session: AuthSession): string {
-    return session.role === 'ADMIN' ? '/app/admin' : '/login';
+    if (session.role === 'ADMIN') {
+      return '/app/admin';
+    }
+
+    if (session.role === 'AUTHOR') {
+      return '/app/author';
+    }
+
+    return '/login';
   }
 
   private persistSession(session: AuthSession): void {

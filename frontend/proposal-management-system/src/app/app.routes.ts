@@ -25,6 +25,12 @@ export const routes: Routes = [
         .then((module) => module.UserManagementComponent),
   },
   {
+    path: 'app/author',
+    canActivate: [authGuard, roleGuard(['AUTHOR'])],
+    loadChildren: () =>
+      import('./features/author/proposal.routes').then(m => m.PROPOSAL_ROUTES),
+  },
+  {
     path: '**',
     redirectTo: 'login',
   },
