@@ -1,0 +1,30 @@
+@use '../../../../../styles/abstracts' as *;
+
+.proposal-list-page {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+    max-width: 75rem;
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: $space-3;
+
+        @include mobile {
+            flex-direction: column;
+        }
+
+        h1 {
+            margin-bottom: $space-1;
+        }
+    }
+
+    &__toolbar {
+        padding: $space-3 $space-4;
+        background: $white;
+        border: 0.0625rem solid $border-color;
+        border-radius: $border-radius-lg;
+    }
+}

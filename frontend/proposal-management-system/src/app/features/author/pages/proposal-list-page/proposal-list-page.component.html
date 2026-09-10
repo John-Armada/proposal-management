@@ -1,0 +1,24 @@
+<section class="proposal-list-page">
+    <header class="proposal-list-page__header">
+        <div>
+            <h1>Proposals</h1>
+            <p class="text-body">Track proposals from draft through client decision.</p>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="createProposal()">
+            New proposal
+        </button>
+    </header>
+
+    <div class="proposal-list-page__toolbar">
+        <app-proposal-filter-bar [departments]="departments" (filterChange)="onFilterChange($event)" />
+    </div>
+
+    @if (errorMessage()) {
+    <div class="alert alert-danger" role="alert">{{ errorMessage() }}</div>
+    }
+
+    <app-proposal-table [proposals]="proposalPage()?.content ?? []" [loading]="loading()"
+        (rowSelect)="openProposal($event)" />
+
+    <app-pagination [page]="proposalPage()" (pageChange)="onPageChange($event)" />
+</section>
