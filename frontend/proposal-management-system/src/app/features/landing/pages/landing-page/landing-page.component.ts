@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { APP_ICONS } from '../../../core/icons/app-icons';
+import { APP_ICONS } from '../../../../core/icons/app-icons';
 
 @Component({
   selector: 'app-landing-page',
