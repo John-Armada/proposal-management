@@ -1,7 +1,8 @@
 <main class="login-page">
     <div class="login-card">
         <section class="login-showcase-card">
-            <img class="showcase-logo" src="/branding/logo-img.svg" alt="Proposal Management System logo" />
+            <img class="showcase-logo" src="/branding/logo-img.svg" alt="Proposal Management System logo"
+                loading="lazy" />
         </section>
 
         <section class="login-form-card" aria-labelledby="login-title">
@@ -15,14 +16,49 @@
             <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
                 <div class="form-field">
                     <label for="email">Email Address</label>
-                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email"
-                        [(ngModel)]="credentials.email" required email />
+                    <div class="input-with-icon" [class.has-error]="emailField.invalid && emailField.touched">
+                        <fa-icon class="field-icon" [icon]="icons.email" aria-hidden="true"></fa-icon>
+                        <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email"
+                            [(ngModel)]="credentials.email" required email #emailField="ngModel"
+                            [attr.aria-invalid]="emailField.invalid && emailField.touched"
+                            [attr.aria-describedby]="emailField.invalid && emailField.touched ? 'email-error' : null" />
+                    </div>
+                    @if (emailField.invalid && emailField.touched) {
+                    <p class="field-error" id="email-error" role="alert">
+                        @if (emailField.errors?.['required']) {
+                        Email address is required.
+                        } @else if (emailField.errors?.['email']) {
+                        Enter a valid email address.
+                        }
+                    </p>
+                    }
                 </div>
 
                 <div class="form-field password-field">
                     <label for="password">Password</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password"
-                        placeholder="Enter your password" [(ngModel)]="credentials.password" required />
+                    <div class="input-with-icon" [class.has-error]="passwordField.invalid && passwordField.touched">
+                        <fa-icon class="field-icon" [icon]="icons.password" aria-hidden="true"></fa-icon>
+                        <input id="password" name="password" [type]="isPasswordVisible ? 'text' : 'password'"
+                            autocomplete="current-password" placeholder="Enter your password"
+                            [(ngModel)]="credentials.password" required minlength="8" #passwordField="ngModel"
+                            [attr.aria-invalid]="passwordField.invalid && passwordField.touched"
+                            [attr.aria-describedby]="passwordField.invalid && passwordField.touched ? 'password-error' : null" />
+                        <button type="button" class="toggle-password-visibility"
+                            [attr.aria-label]="isPasswordVisible ? 'Hide password' : 'Show password'"
+                            [attr.aria-pressed]="isPasswordVisible" (click)="togglePasswordVisibility()">
+                            <fa-icon [icon]="isPasswordVisible ? icons.eyeSlash : icons.eye"
+                                aria-hidden="true"></fa-icon>
+                        </button>
+                    </div>
+                    @if (passwordField.invalid && passwordField.touched) {
+                    <p class="field-error" id="password-error" role="alert">
+                        @if (passwordField.errors?.['required']) {
+                        Password is required.
+                        } @else if (passwordField.errors?.['minlength']) {
+                        Password must be at least 8 characters.
+                        }
+                    </p>
+                    }
                 </div>
 
                 @if (loginError) {
