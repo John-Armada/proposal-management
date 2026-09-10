@@ -6,14 +6,14 @@
 <section class="proposal-detail-page">
     <header class="proposal-detail-page__header">
         <div>
-            <a class="text-meta proposal-detail-page__back" routerLink="/proposals">← All proposals</a>
+            <a class="text-meta proposal-detail-page__back" routerLink="/app/author">← All proposals</a>
             <h1>{{ proposal.title }}</h1>
             <div class="proposal-detail-page__meta">
                 <app-proposal-status-badge [status]="proposal.status" />
                 <span class="text-meta">Version {{ proposal.currentVersion }}</span>
             </div>
         </div>
-        <a class="btn btn-outline-secondary" [routerLink]="['/proposals', proposal.id, 'edit']">
+        <a class="btn btn-outline-secondary" [routerLink]="['/app/author', proposal.id, 'edit']">
             Edit
         </a>
     </header>
