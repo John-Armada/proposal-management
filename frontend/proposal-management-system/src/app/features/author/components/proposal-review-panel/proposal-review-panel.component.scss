@@ -1,0 +1,28 @@
+@use '../../../../../styles/abstracts' as *;
+
+.review-panel {
+    padding: $space-4;
+    border: 0.0625rem solid $border-color;
+    border-radius: $border-radius-lg;
+    background: $white;
+
+    &__title {
+        margin-bottom: $space-3;
+    }
+
+    &__notice {
+        margin: 0;
+    }
+
+    &__comment {
+        margin-top: $space-1;
+        margin-bottom: $space-3;
+        resize: vertical;
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: $space-2;
+    }
+}
