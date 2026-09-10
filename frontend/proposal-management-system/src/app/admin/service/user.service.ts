@@ -14,8 +14,8 @@ import {
     providedIn: 'root'
 })
 export class UserService {
-    private readonly usersUrl = '/api/users';
-    private readonly departmentsUrl = '/api/departments';
+    private readonly usersUrl = '/api/admin/users';
+    private readonly departmentsUrl = '/api/users/departments/active';
 
     constructor(private readonly http: HttpClient) { }
 
@@ -43,8 +43,6 @@ export class UserService {
     }
 
     getActiveDepartments(): Observable<DepartmentLookup[]> {
-        return this.http.get<DepartmentLookup[]>(this.departmentsUrl, {
-            params: new HttpParams().set('activeOnly', 'true')
-        });
+        return this.http.get<DepartmentLookup[]>(this.departmentsUrl);
     }
 }

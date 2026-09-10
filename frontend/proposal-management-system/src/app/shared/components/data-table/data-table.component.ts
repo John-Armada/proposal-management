@@ -13,6 +13,7 @@ import { DataTableColumn, DataTableColumnAlign } from './data-table.model';
   templateUrl: './data-table.component.html',
 })
 export class DataTable<T = Record<string, unknown>> {
+
   protected readonly icons = APP_ICONS;
 
   @Input({ required: true }) columns: DataTableColumn<T>[] = [];
