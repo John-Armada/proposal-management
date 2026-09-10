@@ -1,22 +1,22 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ClientAccount } from '../../shared/models/intake.model';
+import { Account } from '../../shared/models/intake.model';
 
 @Injectable({ providedIn: 'root' })
-export class ClientService {
+export class AccountService {
   private readonly http = inject(HttpClient);
 
-  getAll(): Observable<ClientAccount[]> {
-    return this.http.get<ClientAccount[]>('/api/accounts');
+  getAll(): Observable<Account[]> {
+    return this.http.get<Account[]>('/api/accounts');
   }
 
-  create(client: ClientAccount): Observable<ClientAccount> {
-    return this.http.post<ClientAccount>('/api/accounts', client);
+  create(account: Account): Observable<Account> {
+    return this.http.post<Account>('/api/accounts', account);
   }
 
-  update(id: number, client: ClientAccount): Observable<ClientAccount> {
-    return this.http.put<ClientAccount>(`/api/accounts/${id}`, client);
+  update(id: number, account: Account): Observable<Account> {
+    return this.http.put<Account>(`/api/accounts/${id}`, account);
   }
 
   delete(id: number): Observable<void> {
