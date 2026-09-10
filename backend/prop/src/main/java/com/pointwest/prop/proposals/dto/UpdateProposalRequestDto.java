@@ -3,17 +3,16 @@ package com.pointwest.prop.proposals.dto;
 import java.math.BigDecimal;
 
 import com.pointwest.prop.common.validation.ValidGoogleDocLink;
+import com.pointwest.prop.proposals.enums.ProposalStatus;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UpdateProposalRequestDto(
 
-    @NotBlank(message = "Proposal title is required")
     @Size(max = 255, message = "Title must not exceed 255 characters")
     String title,
 
@@ -33,6 +32,8 @@ public record UpdateProposalRequestDto(
     @Min(value = 1, message = "Resource count must be at least 1")
     @Max(value = 1000, message = "Resource count cannot exceed 1000")
     Integer totalResources,
+
+    ProposalStatus status,
 
     Long categoryId,
     Long departmentId,

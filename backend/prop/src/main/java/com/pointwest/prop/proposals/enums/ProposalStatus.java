@@ -3,7 +3,9 @@ package com.pointwest.prop.proposals.enums;
 public enum ProposalStatus {
     DRAFT,
     IN_REVIEW,
-    APPROVED,
+    SENT,
+    WON,
+    LOST,
     REJECTED,
-    ARCHIVED
+    APPROVED
 }

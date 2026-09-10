@@ -44,7 +44,6 @@ public interface ProposalMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "status", ignore = true)
     @Mapping(target = "currentVersion", ignore = true)
     @Mapping(target = "request", ignore = true)
     @Mapping(target = "account", ignore = true)
