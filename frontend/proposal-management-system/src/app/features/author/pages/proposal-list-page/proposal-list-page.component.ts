@@ -73,10 +73,10 @@ export class ProposalListPageComponent {
   }
 
   protected openProposal(proposal: Proposal): void {
-    this.router.navigate(['/proposals', proposal.id]);
+    this.router.navigate(['/app/author', proposal.id]);
   }
 
   protected createProposal(): void {
-    this.router.navigate(['/proposals', 'new']);
+    this.router.navigate(['/app/author', 'new']);
   }
 }
