@@ -1,0 +1,41 @@
+<div class="proposal-table" role="table" aria-label="Proposals">
+    <div class="proposal-table__row proposal-table__row--head" role="row">
+        <span role="columnheader">Title</span>
+        <span role="columnheader">Account</span>
+        <span role="columnheader">Department</span>
+        <span role="columnheader">Status</span>
+        <span role="columnheader" class="text-end">Contract value</span>
+    </div>
+
+    @if (loading()) {
+    @for (skeleton of [1, 2, 3, 4]; track skeleton) {
+    <div class="proposal-table__row proposal-table__row--skeleton" role="row">
+        <span class="skeleton-bar"></span>
+        <span class="skeleton-bar"></span>
+        <span class="skeleton-bar"></span>
+        <span class="skeleton-bar"></span>
+        <span class="skeleton-bar"></span>
+    </div>
+    }
+    } @else if (proposals().length === 0) {
+    <div class="proposal-table__empty">
+        <p class="text-body">No proposals match the current filters.</p>
+    </div>
+    } @else {
+    @for (proposal of proposals(); track proposal.id) {
+    <button type="button" class="proposal-table__row proposal-table__row--body" role="row"
+        (click)="rowSelect.emit(proposal)">
+        <span role="cell" class="proposal-table__title">
+            {{ proposal.title }}
+            <span class="text-meta d-block">v{{ proposal.currentVersion }}</span>
+        </span>
+        <span role="cell">{{ proposal.accountName }}</span>
+        <span role="cell">{{ proposal.departmentName }}</span>
+        <span role="cell"><app-proposal-status-badge [status]="proposal.status" /></span>
+        <span role="cell" class="text-end currency">
+            {{ proposal.contractValue != null ? (proposal.contractValue | currency) : '—' }}
+        </span>
+    </button>
+    }
+    }
+</div>
