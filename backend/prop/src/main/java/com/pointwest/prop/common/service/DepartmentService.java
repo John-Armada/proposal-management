@@ -10,6 +10,7 @@ import com.pointwest.prop.common.exception.BadRequestException;
 import com.pointwest.prop.common.exception.ResourceNotFoundException;
 import com.pointwest.prop.common.repository.DepartmentRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,6 +18,13 @@ import lombok.RequiredArgsConstructor;
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
+    
+
+    @Transactional 
+    public Department findById(Long id){
+        return departmentRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Department not found with ID: " + id));
+    }
 
     @Transactional(readOnly = true)
     public List<Department> findAll(boolean activeOnly) {
@@ -35,3 +43,4 @@ public class DepartmentService {
         return department;
     }
 }
+

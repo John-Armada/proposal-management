@@ -12,6 +12,7 @@ import { DataTableColumn, DataTableColumnAlign } from '../../models/data-table.m
   templateUrl: './data-table.component.html',
 })
 export class DataTable<T = Record<string, unknown>> {
+
   protected readonly icons = APP_ICONS;
 
   readonly columns = input.required<DataTableColumn<T>[]>();

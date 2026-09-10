@@ -1,9 +1,9 @@
 package com.pointwest.prop.accounts.controller;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,19 +38,16 @@ public class AccountController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('AUTHOR', 'REVIEWER', 'ADMIN')")
     public ResponseEntity<AccountResponseDto> create(@Valid @RequestBody AccountRequestDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createAccount(dto));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('AUTHOR', 'REVIEWER', 'ADMIN')")
     public ResponseEntity<AccountResponseDto> update(@PathVariable Long id, @Valid @RequestBody AccountRequestDto dto) {
         return ResponseEntity.ok(accountService.updateAccount(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('AUTHOR', 'REVIEWER', 'ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();

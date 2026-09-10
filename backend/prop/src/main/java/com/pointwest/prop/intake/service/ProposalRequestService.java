@@ -3,11 +3,13 @@ package com.pointwest.prop.intake.service;
 import java.util.List;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pointwest.prop.accounts.entity.Account;
 import com.pointwest.prop.accounts.repository.AccountRepository;
+import com.pointwest.prop.auth.model.Permission;
 import com.pointwest.prop.auth.util.SecurityUtils;
 import com.pointwest.prop.common.entity.Department;
 import com.pointwest.prop.common.entity.Offering;
@@ -22,6 +24,7 @@ import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 import com.pointwest.prop.user.entity.User;
 import com.pointwest.prop.user.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,6 +37,7 @@ public class ProposalRequestService {
     private final DepartmentRepository departmentRepository;
     private final OfferingRepository offeringRepository;
 
+    @PreAuthorize("hasAuthority('" + Permission.PROPOSAL_REQUEST_VIEW + "')")
     @Transactional(readOnly = true)
     public List<ProposalRequestResponseDto> getAllRequests() {
         return proposalRequestRepository.findAllWithDetails()
@@ -42,22 +46,18 @@ public class ProposalRequestService {
                 .toList();
     }
 
+    @PreAuthorize("hasAuthority('" + Permission.PROPOSAL_REQUEST_CREATE + "')")
     @Transactional
     public ProposalRequestResponseDto createRequest(ProposalRequestCreateDto dto) {
         Account account = accountRepository.findById(dto.getAccountId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", dto.getAccountId()));
 
-        // The assigned user must exist and must have the AUTHOR role.
         User author = getValidAuthor(dto.getAssignedAuthorId());
 
-        // When creating a new Proposal Request,
-        // the selected Department must currently be active.
         Department department = departmentRepository.findById(dto.getDepartmentId())
                 .filter(Department::getActive)
                 .orElseThrow(() -> new BadRequestException("Department is invalid or inactive"));
 
-        // When creating a new Proposal Request,
-        // the selected Offering must currently be active.
         Offering offering = offeringRepository.findById(dto.getOfferingId())
                 .filter(Offering::getActive)
                 .orElseThrow(() -> new BadRequestException("Offering is invalid or inactive"));
@@ -75,67 +75,34 @@ public class ProposalRequestService {
         return mapToDto(savedRequest);
     }
 
+    @PreAuthorize("hasAuthority('" + Permission.PROPOSAL_REQUEST_EDIT + "')")
     @Transactional
     public ProposalRequestResponseDto updateRequest(Long id, ProposalRequestCreateDto dto) {
         ProposalRequest request = proposalRequestRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proposal Request", "id", id));
 
-        /*
-         * Rule:
-         * Only the assigned Author, Reviewer, or Admin
-         * may modify this Proposal Request.
-         */
+        // Runtime check: Authors can only modify their own assigned requests
         verifyModifyPermission(request);
 
-        /*
-         * Rule:
-         * An Author cannot reassign the Proposal Request.
-         * Only Reviewer or Admin can change the assigned Author.
-         */
+        // Runtime check: Reassignment requires PROPOSAL_REQUEST_REASSIGN (Reviewer/Admin)
         if (!request.getAssignedAuthor().getUserId().equals(dto.getAssignedAuthorId())) {
             if (!SecurityUtils.isAdmin() && !SecurityUtils.isReviewer()) {
                 throw new AccessDeniedException(
                         "Authors cannot reassign the Proposal Request to a different author."
                 );
             }
-
-            /*
-             * The newly assigned user must:
-             * 1. Exist
-             * 2. Have the AUTHOR role
-             */
             User newAuthor = getValidAuthor(dto.getAssignedAuthorId());
             request.setAssignedAuthor(newAuthor);
         }
 
-        /*
-         * Start with the Proposal Request's current Department.
-         *
-         * This allows an existing historical reference
-         * to remain even if the Department was later deactivated.
-         */
         Department department = request.getDepartment();
-
-        /*
-         * Only perform active validation when the user
-         * is actually selecting a DIFFERENT Department.
-         */
         if (!request.getDepartment().getId().equals(dto.getDepartmentId())) {
             department = departmentRepository.findById(dto.getDepartmentId())
                     .filter(Department::getActive)
                     .orElseThrow(() -> new BadRequestException("Department is invalid or inactive"));
         }
 
-        /*
-         * Start with the current Offering for the same reason:
-         * historical inactive references are allowed to remain.
-         */
         Offering offering = request.getOffering();
-
-        /*
-         * If the Offering changes,
-         * the newly selected Offering must be active.
-         */
         if (!request.getOffering().getId().equals(dto.getOfferingId())) {
             offering = offeringRepository.findById(dto.getOfferingId())
                     .filter(Offering::getActive)
@@ -155,24 +122,24 @@ public class ProposalRequestService {
         return mapToDto(savedRequest);
     }
 
+    @PreAuthorize("hasAuthority('" + Permission.PROPOSAL_REQUEST_DELETE + "')")
     @Transactional
     public void deleteRequest(Long id) {
         ProposalRequest request = proposalRequestRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proposal Request", "id", id));
 
         verifyModifyPermission(request);
-
         proposalRequestRepository.delete(request);
     }
 
-    /*
-     * Validates the User that will be assigned
-     * as the Proposal Request's Author.
-     *
-     * The user must:
-     * 1. Exist
-     * 2. Have the AUTHOR role
+    /**
+     * Service-to-service inquiry method to prevent cross-module repository leaking.
      */
+    @Transactional(readOnly = true)
+    public boolean hasRequestsForAccount(Long accountId) {
+        return proposalRequestRepository.existsByAccountId(accountId);
+    }
+
     private User getValidAuthor(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Author User", "id", userId));
@@ -180,32 +147,18 @@ public class ProposalRequestService {
         if (!user.getRole().isAuthor()) {
             throw new BadRequestException("Assigned user must have the AUTHOR role");
         }
-
         return user;
     }
 
-    /*
-     * Only these users may modify a Proposal Request:
-     *
-     * - the currently assigned Author
-     * - Reviewer
-     * - Admin
-     */
     private void verifyModifyPermission(ProposalRequest request) {
         boolean isOwner = SecurityUtils.isSameIdentityAs(request.getAssignedAuthor().getUserId());
-
         if (!isOwner && !SecurityUtils.isReviewer() && !SecurityUtils.isAdmin()) {
             throw new AccessDeniedException("You are not authorized to modify this Proposal Request.");
         }
     }
 
-    /*
-     * Converts the JPA Entity into the DTO
-     * returned to the frontend.
-     */
     private ProposalRequestResponseDto mapToDto(ProposalRequest pr) {
         ProposalRequestResponseDto dto = new ProposalRequestResponseDto();
-
         dto.setId(pr.getId());
         dto.setRequirementsSummary(pr.getRequirementsSummary());
         dto.setDeadline(pr.getDeadline());
@@ -218,7 +171,6 @@ public class ProposalRequestService {
         dto.setDepartmentName(pr.getDepartment().getName());
         dto.setOfferingId(pr.getOffering().getId());
         dto.setOfferingName(pr.getOffering().getName());
-
         return dto;
     }
 }
