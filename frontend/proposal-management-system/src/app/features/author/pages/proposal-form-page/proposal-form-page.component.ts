@@ -132,7 +132,10 @@ export class ProposalFormPageComponent {
         departmentId: raw.departmentId,
         offeringId: raw.offeringId,
       };
-      this.proposalService.update(existing.id, request).subscribe(this.saveObserver(existing.id));
+      this.proposalService.update(existing.id, request).subscribe({
+        next: (saved) => this.onSaved(saved),
+        error: (err) => this.handleSaveError(err),
+      });
     } else {
       const request: CreateProposalRequest = {
         requestId: raw.requestId!,
@@ -149,20 +152,15 @@ export class ProposalFormPageComponent {
         totalResources: raw.totalResources,
       };
       this.proposalService.create(request).subscribe({
-        next: (created) => this.saveObserver(created.id).next(),
+        next: (created) => this.onSaved(created),
         error: (err) => this.handleSaveError(err),
       });
     }
   }
 
-  private saveObserver(id: number) {
-    return {
-      next: () => {
-        this.saving.set(false);
-        this.router.navigate(['/proposals', id]);
-      },
-      error: (err: unknown) => this.handleSaveError(err),
-    };
+  private onSaved(saved: Proposal): void {
+    this.saving.set(false);
+    this.router.navigate(['/app/author', saved.id]);
   }
 
   private handleSaveError(err: unknown): void {

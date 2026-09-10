@@ -1,0 +1,73 @@
+@use '../../../../../styles/abstracts' as *;
+
+.proposal-form-page {
+    max-width: 48rem;
+
+    &__back {
+        display: inline-block;
+        margin-bottom: $space-2;
+        color: $slate;
+        text-decoration: none;
+
+        &:hover {
+            color: $primary;
+        }
+    }
+}
+
+.proposal-form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+    margin-top: $space-4;
+
+    &__section {
+        padding: $space-4;
+        border: 0.0625rem solid $border-color;
+        border-radius: $border-radius-lg;
+        background: $white;
+
+        legend {
+            padding: 0 $space-1;
+            font-size: 0.8125rem;
+            font-weight: var(--fw-semibold);
+            color: $slate;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+    }
+
+    &__row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+        gap: $space-3;
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: $space-1;
+        margin-bottom: $space-3;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__hint {
+        text-transform: none;
+        letter-spacing: normal;
+        color: $slate;
+    }
+
+    &__error {
+        font-size: 0.75rem;
+        color: $danger;
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: $space-2;
+    }
+}

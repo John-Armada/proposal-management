@@ -1,1 +1,106 @@
-<p>proposal-form-page works!</p>
+<section class="proposal-form-page">
+    <a class="text-meta proposal-form-page__back" routerLink="/app/author">← All proposals</a>
+    <h1>{{ isEdit() ? 'Edit proposal' : 'New proposal' }}</h1>
+
+    @if (errorMessage()) {
+    <div class="alert alert-danger" role="alert">{{ errorMessage() }}</div>
+    }
+
+    <form class="proposal-form" [formGroup]="form" (ngSubmit)="submit()">
+        <fieldset class="proposal-form__section">
+            <legend>Relationships</legend>
+            <div class="proposal-form__row">
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="requestId">Request ID</label>
+                    <input id="requestId" type="number" class="form-control" formControlName="requestId" />
+                    @if (form.controls.requestId.touched && form.controls.requestId.invalid) {
+                    <span class="proposal-form__error">Request is required.</span>
+                    }
+                </div>
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="accountId">Account ID</label>
+                    <input id="accountId" type="number" class="form-control" formControlName="accountId" />
+                    @if (form.controls.accountId.touched && form.controls.accountId.invalid) {
+                    <span class="proposal-form__error">Account is required.</span>
+                    }
+                </div>
+            </div>
+            <div class="proposal-form__row">
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="departmentId">Department ID</label>
+                    <input id="departmentId" type="number" class="form-control" formControlName="departmentId" />
+                    @if (fieldErrors()['departmentId']) {
+                    <span class="proposal-form__error">{{ fieldErrors()['departmentId'] }}</span>
+                    }
+                </div>
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="offeringId">Offering ID</label>
+                    <input id="offeringId" type="number" class="form-control" formControlName="offeringId" />
+                    @if (fieldErrors()['offeringId']) {
+                    <span class="proposal-form__error">{{ fieldErrors()['offeringId'] }}</span>
+                    }
+                </div>
+            </div>
+            <div class="proposal-form__row">
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="templateId">Template ID (optional)</label>
+                    <input id="templateId" type="number" class="form-control" formControlName="templateId" />
+                </div>
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="categoryId">Category ID (optional)</label>
+                    <input id="categoryId" type="number" class="form-control" formControlName="categoryId" />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="proposal-form__section">
+            <legend>Details</legend>
+            <div class="proposal-form__field">
+                <label class="text-meta" for="title">Title</label>
+                <input id="title" type="text" class="form-control" formControlName="title" maxlength="255" />
+                @if (form.controls.title.touched && form.controls.title.invalid) {
+                <span class="proposal-form__error">Proposal title is required.</span>
+                }
+            </div>
+            <div class="proposal-form__field">
+                <label class="text-meta" for="description">Description</label>
+                <textarea id="description" class="form-control" rows="3" formControlName="description"></textarea>
+            </div>
+            <div class="proposal-form__field">
+                <label class="text-meta" for="googleDocUrl">Google Doc URL</label>
+                <input id="googleDocUrl" type="url" class="form-control" formControlName="googleDocUrl" />
+                <span class="text-meta proposal-form__hint">
+                    Leave blank on create to inherit the selected template's document.
+                </span>
+            </div>
+        </fieldset>
+
+        <fieldset class="proposal-form__section">
+            <legend>Commercials</legend>
+            <div class="proposal-form__row">
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="contractValue">Contract value</label>
+                    <input id="contractValue" type="number" step="0.01" min="0" class="form-control"
+                        formControlName="contractValue" />
+                </div>
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="projectDuration">Duration (months)</label>
+                    <input id="projectDuration" type="number" min="1" max="120" class="form-control"
+                        formControlName="projectDuration" />
+                </div>
+                <div class="proposal-form__field">
+                    <label class="text-meta" for="totalResources">Total resources</label>
+                    <input id="totalResources" type="number" min="1" max="1000" class="form-control"
+                        formControlName="totalResources" />
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="proposal-form__actions">
+            <a class="btn btn-outline-secondary" routerLink="/app/author">Cancel</a>
+            <button type="submit" class="btn btn-primary" [disabled]="saving()">
+                {{ saving() ? 'Saving…' : 'Save proposal' }}
+            </button>
+        </div>
+    </form>
+</section>
