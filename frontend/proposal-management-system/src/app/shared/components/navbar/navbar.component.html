@@ -1,0 +1,64 @@
+<header class="navbar">
+    <form class="navbar-search" role="search" (ngSubmit)="onSearchSubmit()">
+        <fa-icon class="search-icon" [icon]="icons.search" aria-hidden="true"></fa-icon>
+        <input type="search" name="global-search" autocomplete="off"
+            aria-label="Search clients, requests, and proposals" placeholder="Search clients, requests, proposals..."
+            [(ngModel)]="searchTerm" />
+    </form>
+
+    <div class="navbar-actions">
+        <div class="notifications" [class.open]="isNotificationsOpen">
+            <button type="button" class="icon-btn" aria-label="Notifications" aria-haspopup="true"
+                [attr.aria-expanded]="isNotificationsOpen" (click)="toggleNotifications()">
+                <fa-icon [icon]="icons.bell"></fa-icon>
+                @if (notifications.length > 0) {
+                <span class="notification-count">{{ notifications.length }}</span>
+                }
+            </button>
+
+            @if (isNotificationsOpen) {
+            <div class="dropdown-panel notifications-panel" role="menu">
+                <p class="dropdown-title">Notifications</p>
+                @if (notifications.length === 0) {
+                <p class="empty-state">You're all caught up.</p>
+                } @else {
+                <ul class="notification-list">
+                    @for (notification of notifications; track notification.id) {
+                    <li class="notification-item">
+                        <fa-icon [icon]="icons.alertFlag" aria-hidden="true"></fa-icon>
+                        <span>{{ notification.message }}</span>
+                    </li>
+                    }
+                </ul>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="user-menu" [class.open]="isUserMenuOpen">
+            <button type="button" class="user-menu-trigger" aria-haspopup="true" [attr.aria-expanded]="isUserMenuOpen"
+                (click)="toggleUserMenu()">
+                <span class="user-avatar" aria-hidden="true">{{ initials() }}</span>
+                <span class="user-name">{{ displayName() }}</span>
+                <fa-icon class="chevron" [icon]="icons.chevronDown" aria-hidden="true"></fa-icon>
+            </button>
+
+            @if (isUserMenuOpen) {
+            <div class="dropdown-panel user-panel" role="menu">
+                <div class="user-panel-header">
+                    <p class="user-panel-name">{{ displayName() }}</p>
+                    <p class="user-panel-email">{{ session()?.email }}</p>
+                </div>
+                <button type="button" class="dropdown-action" role="menuitem" (click)="logout()">
+                    <fa-icon [icon]="icons.logout" aria-hidden="true"></fa-icon>
+                    Logout
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+
+    @if (isUserMenuOpen || isNotificationsOpen) {
+    <div class="dropdown-backdrop" aria-hidden="true" (click)="closeMenus()"></div>
+    }
+</header>

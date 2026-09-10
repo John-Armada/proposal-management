@@ -1,14 +1,24 @@
 import {
   faArrowRight,
   faArrowRightToBracket,
+  faBell,
+  faChevronDown,
   faChevronLeft,
   faChevronRight,
   faCompass,
   faEnvelope,
+  faEye,
+  faEyeSlash,
+  faLock,
+  faMagnifyingGlass,
+  faPenToSquare,
   faRightFromBracket,
   faShield,
   faFileContract,
-  faUsers
+  faTriangleExclamation,
+  faUserCheck,
+  faUsers,
+  faUserSlash
 } from '@fortawesome/free-solid-svg-icons';
 
 export const APP_ICONS = {
@@ -16,10 +26,21 @@ export const APP_ICONS = {
   arrowRight: faArrowRight,
   chevronLeft: faChevronLeft,
   chevronRight: faChevronRight,
+  chevronDown: faChevronDown,
   explore: faCompass,
   contact: faEnvelope,
+  email: faEnvelope,
+  password: faLock,
+  eye: faEye,
+  eyeSlash: faEyeSlash,
   logout: faRightFromBracket,
   shield: faShield,
   contract: faFileContract,
-  users: faUsers
+  users: faUsers,
+  search: faMagnifyingGlass,
+  bell: faBell,
+  alertFlag: faTriangleExclamation,
+  edit: faPenToSquare,
+  userSlash: faUserSlash,
+  userCheck: faUserCheck
 } as const;

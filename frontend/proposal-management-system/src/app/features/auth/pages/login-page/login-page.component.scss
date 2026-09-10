@@ -12,13 +12,16 @@
 .login-card {
     width: 100%;
     max-width: 64rem;
-    max-height: 40rem;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: stretch;
     border-radius: $border-radius-lg;
     box-shadow: 0 1.5rem 3rem rgba($primary, 0.16);
     overflow: hidden;
+
+    @media (min-width: 64rem) {
+        max-height: min(40rem, 92vh);
+    }
 }
 
 .login-showcase-card,
@@ -104,7 +107,7 @@
     input {
         width: 100%;
         height: 3.25rem;
-        padding: 0 $space-3;
+        padding: 0 $space-3 0 2.75rem;
         border: 0.0625rem solid $input-field;
         border-radius: $border-radius-lg;
         background: $white;
@@ -125,11 +128,69 @@
     }
 }
 
-.password-field {
+.input-with-icon {
     position: relative;
+    display: flex;
+    align-items: center;
+}
 
+.field-icon {
+    position: absolute;
+    left: $space-3;
+    color: $slate;
+    font-size: 0.875rem;
+    pointer-events: none;
+}
+
+.input-with-icon.has-error {
     input {
-        padding-right: 3rem;
+        border-color: $danger;
+
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba($danger, 0.16);
+        }
+    }
+
+    .field-icon {
+        color: $danger;
+    }
+}
+
+.field-error {
+    margin: $space-1 0 0;
+    color: $danger;
+    font-size: 0.75rem;
+    font-weight: var(--fw-semibold);
+}
+
+.password-field {
+    input {
+        padding-right: 2.75rem;
+    }
+}
+
+.toggle-password-visibility {
+    position: absolute;
+    right: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: $border-radius-sm;
+    background: transparent;
+    color: $slate;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color $transition-fast;
+
+    &:hover {
+        color: $primary;
+    }
+
+    &:focus-visible {
+        color: $primary;
     }
 }
 
@@ -200,14 +261,9 @@
     }
 }
 
-@include mobile {
-    .login-page {
-        padding: $space-4 $space-3;
-    }
-
+@include tablet {
     .login-card {
-        grid-template-columns: 1fr;
-        max-height: none;
+        max-width: 42rem;
     }
 
     .login-showcase-card {
@@ -215,11 +271,31 @@
     }
 
     .showcase-logo {
-        width: min(70%, 12rem);
+        width: min(70%, 13rem);
         margin-bottom: $space-4;
     }
 
     .login-form-card {
+        padding: $space-5 clamp($space-4, 4vw, $space-6);
+    }
+}
+
+@include mobile {
+    .login-page {
+        padding: $space-4 $space-3;
+    }
+
+    .login-card {
+        grid-template-columns: 1fr;
+        box-shadow: 0 0.75rem 2rem rgba($primary, 0.14);
+    }
+
+    .login-showcase-card {
+        display: none;
+    }
+
+    .login-form-card {
+        border: none;
         padding: $space-5 $space-4;
     }
 

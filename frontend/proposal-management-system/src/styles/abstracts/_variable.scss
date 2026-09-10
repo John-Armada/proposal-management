@@ -14,15 +14,15 @@ $font-family-monospace: 'JetBrains Mono', Consolas, monospace;
 // 3. COLOR PALETTE
 // ==========================================
 // Brand & Semantic Overrides
-$primary: #0B5E59;      // --brand color
+$primary: #0B5E59; // --brand color
 $success: #1E7A46;
 $warning: #B8860B;
 $danger: #B23A48;
 $info: #3E6E8E;
 
 // Neutrals
-$body-bg: #F5F8F8;      // --surface color
-$body-color: #0F2A28;   // --ink color
+$body-bg: #F5F8F8; // --surface color
+$body-color: #0F2A28; // --ink color
 $border-color: #E3E5EA;
 $input-field: #DCE7E6; // input-field borders
 
@@ -60,6 +60,7 @@ $header-height-mobile: 3.5rem;
 $nav-width-collapsed: 4.5rem;
 $nav-width-expanded: 13.75rem;
 $nav-width-expanded-max: 15rem;
+$nav-height-mobile: 4.25rem;
 $feed-width-pct: 25%;
 $feed-width-pct-tablet: 33%;
 $feed-min-width: 20rem;

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pointwest.prop.common.dto.DepartmentResponseDto;
 import com.pointwest.prop.common.entity.Department;
 import com.pointwest.prop.common.mapper.DepartmentMapper;
-import com.pointwest.prop.common.repository.DepartmentRepository;
+import com.pointwest.prop.common.service.DepartmentService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,21 +20,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DepartmentController {
 
-    private final DepartmentRepository departmentRepository;
-    private final DepartmentMapper departmentMapper;
+        private final DepartmentService departmentService;
+        private final DepartmentMapper departmentMapper;
 
-    @GetMapping
-    public ResponseEntity<List<DepartmentResponseDto>> list(
-            @RequestParam(name = "activeOnly", defaultValue = "true") boolean activeOnly) {
+        @GetMapping
+        public ResponseEntity<List<DepartmentResponseDto>> list(
+                        @RequestParam(name = "activeOnly", defaultValue = "true") boolean activeOnly) {
 
-        List<Department> departments = activeOnly
-                ? departmentRepository.findByActiveTrue()
-                : departmentRepository.findAll();
+                List<Department> departments = departmentService.findAll(activeOnly);
 
-        List<DepartmentResponseDto> response = departments.stream()
-                .map(departmentMapper::toDto)
-                .toList();
+                List<DepartmentResponseDto> response = departments.stream()
+                                .map(departmentMapper::toDto)
+                                .toList();
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 }

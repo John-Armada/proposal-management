@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -15,15 +15,10 @@ import { APP_ICONS } from '../../../core/icons/app-icons';
 export class SidebarComponent {
   protected readonly icons = APP_ICONS;
 
-  @Input ({required: true}) navItems: NavItem[] = [];
-  @Output() logout = new EventEmitter<void>();
+  @Input({ required: true }) navItems: NavItem[] = [];
 
   isCollapsed = false;
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
-  }
-
-  onLogout(): void {
-    this.logout.emit();
   }
 }

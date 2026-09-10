@@ -1,22 +1,31 @@
 import { Component, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { LoginRequest } from '../../../../shared/models/login-request.model';
+import { APP_ICONS } from '../../../../core/icons/app-icons';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule],
+  imports: [FormsModule, FontAwesomeModule],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
 })
 export class LoginPage {
   private readonly auth = inject(AuthService);
 
+  protected readonly icons = APP_ICONS;
+
   credentials: LoginRequest = { email: '', password: '' };
   isSubmitting = false;
   loginError = '';
+  isPasswordVisible = false;
+
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
 
   onSubmit(): void {
     if (this.isSubmitting) {
