@@ -1,6 +1,7 @@
-package com.pointwest.prop.admin.dto;
+package com.pointwest.prop.user.admin.dto;
 
 import com.pointwest.prop.auth.model.Role;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

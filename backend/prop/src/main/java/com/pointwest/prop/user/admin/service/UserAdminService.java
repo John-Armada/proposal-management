@@ -1,40 +1,39 @@
-package com.pointwest.prop.admin.service;
+package com.pointwest.prop.user.admin.service;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pointwest.prop.common.dto.DepartmentResponseDto;
-import com.pointwest.prop.admin.dto.UserCreateRequestDto;
-import com.pointwest.prop.common.dto.UserResponseDto;
-import com.pointwest.prop.admin.dto.UserUpdateRequestDto;
+import com.pointwest.prop.user.admin.dto.UserCreateRequestDto;
+import com.pointwest.prop.user.admin.dto.UserUpdateRequestDto;
+import com.pointwest.prop.user.dto.UserResponseDto;
 import com.pointwest.prop.common.entity.Department;
-import com.pointwest.prop.common.entity.User;
-import com.pointwest.prop.common.mapper.DepartmentMapper;
-import com.pointwest.prop.common.mapper.UserMapper;
+import com.pointwest.prop.user.entity.User;
+import com.pointwest.prop.user.mapper.UserMapper;
 import com.pointwest.prop.common.repository.DepartmentRepository;
-import com.pointwest.prop.common.repository.UserRepository;
+import com.pointwest.prop.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserAdminService {
 
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final DepartmentMapper departmentMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional(readOnly = true)
     public Page<UserResponseDto> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable).map(userMapper::toDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional(readOnly = true)
     public UserResponseDto getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -42,13 +41,13 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public UserResponseDto createUser(UserCreateRequestDto request) {
         if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
             throw new IllegalArgumentException("Email is already registered.");
         }
 
-        // Validate active department (PROP-ADMIN-1 requirement)
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Department not found."));
 
@@ -70,18 +69,18 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public UserResponseDto updateUser(Long id, UserUpdateRequestDto request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
 
-        if (userRepository.findByEmailIgnoreCase(request.getEmail())
-            .filter(existingUser -> !existingUser.getUserId().equals(id))
-            .isPresent()) {
-            throw new IllegalArgumentException("Email is already in use by another account.");
-        }
+        userRepository.findByEmailIgnoreCase(request.getEmail())
+                .filter(existingUser -> !existingUser.getUserId().equals(id))
+                .ifPresent(existingUser -> {
+                    throw new IllegalArgumentException("Email is already in use by another account.");
+                });
 
-        // Validate active department
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Department not found."));
 
@@ -99,6 +98,7 @@ public class UserService {
         return userMapper.toDto(updatedUser);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public UserResponseDto toggleUserStatus(Long id, boolean active) {
         User user = userRepository.findById(id)
@@ -107,12 +107,5 @@ public class UserService {
         user.setActive(active);
         User updatedUser = userRepository.save(user);
         return userMapper.toDto(updatedUser);
-    }
-
-    @Transactional(readOnly = true)
-    public List<DepartmentResponseDto> getActiveDepartments() {
-        return departmentRepository.findByActiveTrue().stream()
-            .map(departmentMapper::toDto)
-                .toList();
     }
 }
