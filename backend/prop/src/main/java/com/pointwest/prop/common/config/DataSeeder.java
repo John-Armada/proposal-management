@@ -12,9 +12,13 @@ import com.pointwest.prop.accounts.entity.Account;
 import com.pointwest.prop.accounts.repository.AccountRepository;
 import com.pointwest.prop.auth.model.Role;
 import com.pointwest.prop.common.entity.Department;
+import com.pointwest.prop.common.entity.Category;
 import com.pointwest.prop.common.entity.Offering;
+import com.pointwest.prop.common.entity.Template;
+import com.pointwest.prop.common.repository.CategoryRepository;
 import com.pointwest.prop.common.repository.DepartmentRepository;
 import com.pointwest.prop.common.repository.OfferingRepository;
+import com.pointwest.prop.templates.repository.TemplateRepository;
 import com.pointwest.prop.intake.entity.ProposalRequest;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 import com.pointwest.prop.user.entity.User;
@@ -29,7 +33,9 @@ public class DataSeeder {
             UserRepository userRepository,
             AccountRepository accountRepository,
             OfferingRepository offeringRepository,
-            ProposalRequestRepository proposalRequestRepository) {
+            ProposalRequestRepository proposalRequestRepository,
+            CategoryRepository categoryRepository,
+            TemplateRepository templateRepository) {
         return args -> {
             // 1. Define Departments
             List<Department> departments;
@@ -104,17 +110,100 @@ public class DataSeeder {
                             "Technology",
                             "contact@acme.example")));
 
-            if (proposalRequestRepository.count() == 0) {
-                proposalRequestRepository.save(new ProposalRequest(
+            List<Category> categories = List.of(
+                    findOrCreateCategory(categoryRepository, "Digital Transformation"),
+                    findOrCreateCategory(categoryRepository, "Cloud Services"),
+                    findOrCreateCategory(categoryRepository, "Managed Operations"));
+
+            List<Template> templates = new ArrayList<>();
+            templates.add(findOrCreateTemplate(templateRepository, "Executive Solution Proposal",
+                    "Executive-level proposal for strategic client initiatives."));
+            templates.add(findOrCreateTemplate(templateRepository, "Technical Delivery Proposal",
+                    "Detailed proposal for software and platform delivery."));
+            templates.add(findOrCreateTemplate(templateRepository, "Operations Improvement Proposal",
+                    "Proposal for operational efficiency and process improvement."));
+
+            List<Account> accounts = List.of(
+                    account,
+                    findOrCreateAccount(accountRepository, "Globex Industries", "Manufacturing", "contact@globex.example"),
+                    findOrCreateAccount(accountRepository, "Wayne Enterprises", "Financial Services", "contact@wayne.example"));
+
+            List<Offering> offerings = List.of(
+                    offering,
+                    findOrCreateOffering(offeringRepository, "Cloud Migration",
+                            "Cloud migration planning and implementation services."),
+                    findOrCreateOffering(offeringRepository, "Business Process Automation",
+                            "Automation services for high-volume business processes."));
+
+            List<Department> proposalDepartments = List.of(
+                    itDepartment,
+                    departmentRepository.findByName("Human Resources")
+                            .orElseThrow(() -> new IllegalStateException("Human Resources department was not seeded")),
+                    departmentRepository.findByName("Finance & Accounting")
+                            .orElseThrow(() -> new IllegalStateException("Finance & Accounting department was not seeded")));
+
+            List<User> authors = List.of(
+                    author,
+                    userRepository.findByEmailIgnoreCase("human.author1@company.com")
+                            .orElseThrow(() -> new IllegalStateException("Seed author was not created")),
+                    userRepository.findByEmailIgnoreCase("finance.author1@company.com")
+                            .orElseThrow(() -> new IllegalStateException("Seed author was not created")));
+
+                        if (proposalRequestRepository.count() == 0) {
+                                seedProposalRequests(proposalRequestRepository, accounts, offerings,
+                                                proposalDepartments, authors);
+            }
+        };
+    }
+
+        private void seedProposalRequests(
+            ProposalRequestRepository proposalRequestRepository,
+            List<Account> accounts,
+            List<Offering> offerings,
+            List<Department> departments,
+                        List<User> authors) {
+        for (int setIndex = 0; setIndex < 3; setIndex++) {
+            for (int proposalIndex = 1; proposalIndex <= 5; proposalIndex++) {
+                Account account = accounts.get(setIndex);
+                Offering offering = offerings.get(setIndex);
+                Department department = departments.get(setIndex);
+                User author = authors.get(setIndex);
+
+                                proposalRequestRepository.save(new ProposalRequest(
                         null,
-                        "Build a customer-facing proposal management portal.",
-                        LocalDate.now().plusDays(30),
+                        "Requirements for " + account.getName() + " proposal " + proposalIndex,
+                        LocalDate.now().plusDays(30 + proposalIndex),
                         "OPEN",
                         account,
                         author,
-                        itDepartment,
+                        department,
                         offering));
             }
-        };
+        }
+    }
+
+    private Category findOrCreateCategory(CategoryRepository repository, String name) {
+        return repository.findAll().stream()
+                .filter(category -> category.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseGet(() -> repository.save(new Category(null, name, true)));
+    }
+
+    private Template findOrCreateTemplate(TemplateRepository repository, String name, String purpose) {
+        return repository.findAll().stream()
+                .filter(template -> template.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseGet(() -> repository.save(new Template(null, name, purpose,
+                        "https://docs.google.com/document/d/" + name.toLowerCase().replace(' ', '-'))));
+    }
+
+    private Account findOrCreateAccount(AccountRepository repository, String name, String industry, String email) {
+        return repository.findByNameIgnoreCase(name)
+                .orElseGet(() -> repository.save(new Account(null, name, industry, email)));
+    }
+
+    private Offering findOrCreateOffering(OfferingRepository repository, String name, String description) {
+        return repository.findByName(name)
+                .orElseGet(() -> repository.save(new Offering(null, name, description, true)));
     }
 }
