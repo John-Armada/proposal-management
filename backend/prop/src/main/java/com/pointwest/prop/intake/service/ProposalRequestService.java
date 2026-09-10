@@ -140,6 +140,12 @@ public class ProposalRequestService {
         return proposalRequestRepository.existsByAccountId(accountId);
     }
 
+    @Transactional 
+    public ProposalRequest findById(Long id){
+        return proposalRequestRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Cannot find Proposal Request with ID: " + id));
+    }
+
     private User getValidAuthor(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Author User", "id", userId));
