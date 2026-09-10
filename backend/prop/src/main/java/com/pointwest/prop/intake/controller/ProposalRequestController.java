@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,19 +33,16 @@ public class ProposalRequestController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('AUTHOR', 'REVIEWER', 'ADMIN')")
     public ResponseEntity<ProposalRequestResponseDto> create(@Valid @RequestBody ProposalRequestCreateDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(proposalRequestService.createRequest(dto));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('AUTHOR', 'REVIEWER', 'ADMIN')")
     public ResponseEntity<ProposalRequestResponseDto> update(@PathVariable Long id, @Valid @RequestBody ProposalRequestCreateDto dto) {
         return ResponseEntity.ok(proposalRequestService.updateRequest(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('AUTHOR', 'REVIEWER', 'ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         proposalRequestService.deleteRequest(id);
         return ResponseEntity.noContent().build();
