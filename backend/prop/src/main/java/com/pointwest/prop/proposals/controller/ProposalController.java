@@ -19,7 +19,7 @@ import com.pointwest.prop.review.dto.ReviewResponseDto;
 import com.pointwest.prop.review.service.ReviewService;
 
 @RestController
-@RequestMapping("/api/v1/proposals")
+@RequestMapping("/api/proposals")
 @RequiredArgsConstructor 
 @PreAuthorize("hasAnyRole('AUTHOR', 'REVIEWER')")
 public class ProposalController {
