@@ -20,19 +20,19 @@ import com.pointwest.prop.common.entity.Proposal;
 import com.pointwest.prop.common.entity.ProposalVersion;
 import com.pointwest.prop.common.entity.Template;
 import com.pointwest.prop.common.mapper.ProposalMapper;
-import com.pointwest.prop.common.repository.CategoryRepository;
-import com.pointwest.prop.common.repository.DepartmentRepository;
-import com.pointwest.prop.common.repository.OfferingRepository;
-import com.pointwest.prop.common.repository.ProposalVersionRepository;
-import com.pointwest.prop.intake.repository.ProposalRequestRepository;
+import com.pointwest.prop.common.service.CategoryService;
+import com.pointwest.prop.common.service.DepartmentService;
+import com.pointwest.prop.common.service.OfferingService;
+import com.pointwest.prop.common.service.ProposalVersionService;
+import com.pointwest.prop.intake.service.ProposalRequestService;
 import com.pointwest.prop.intake.entity.ProposalRequest;
-import com.pointwest.prop.accounts.repository.AccountRepository;
+import com.pointwest.prop.accounts.service.AccountService;
 import com.pointwest.prop.proposals.dto.CreateProposalRequestDto;
 import com.pointwest.prop.proposals.dto.ProposalResponseDto;
 import com.pointwest.prop.proposals.dto.UpdateProposalRequestDto;
 import com.pointwest.prop.proposals.enums.ProposalStatus;
 import com.pointwest.prop.proposals.repository.ProposalRepository;
-import com.pointwest.prop.templates.repository.TemplateRepository;
+import com.pointwest.prop.templates.service.TemplateService;
 
 import com.pointwest.prop.common.exception.BadRequestException;
 import com.pointwest.prop.common.exception.ResourceNotFoundException;
@@ -44,14 +44,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ProposalService {
-private final ProposalRepository proposalRepository;
-    private final TemplateRepository templateRepository;
-    private final ProposalRequestRepository proposalRequestRepository;
-    private final AccountRepository accountRepository;
-    private final CategoryRepository categoryRepository;
-    private final DepartmentRepository departmentRepository;
-    private final OfferingRepository offeringRepository;
-    private final ProposalVersionRepository proposalVersionRepository;
+    private final ProposalRepository proposalRepository;
+    private final TemplateService templateService;
+    private final ProposalRequestService proposalRequestService;
+    private final AccountService accountService;
+    private final CategoryService categoryService;
+    private final DepartmentService departmentService;
+    private final OfferingService offeringService;
+    private final ProposalVersionService proposalVersionService;
     private final ProposalMapper proposalMapper;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -62,11 +62,8 @@ private final ProposalRepository proposalRepository;
 
         Proposal proposal = proposalMapper.toEntity(requestDto);
 
-        ProposalRequest request = proposalRequestRepository.findById(requestDto.requestId())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Proposal request not found with ID: " + requestDto.requestId()));
-        Account account = accountRepository.findById(requestDto.accountId())
-                .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + requestDto.accountId()));
+        ProposalRequest request = proposalRequestService.findById(requestDto.requestId());
+        Account account = accountService.findById(requestDto.accountId());
         Department department = getActiveDepartment(requestDto.departmentId());
         Offering offering = getActiveOffering(requestDto.offeringId());
 
@@ -90,9 +87,7 @@ private final ProposalRepository proposalRepository;
 
         // 2. Fetch & attach Template if templateId is provided
         if (requestDto.templateId() != null) {
-            Template template = templateRepository.findById(requestDto.templateId())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            "Template not found with ID: " + requestDto.templateId()));
+            Template template = templateService.findById(requestDto.templateId());
 
             proposal.setTemplate(template);
 
@@ -180,8 +175,7 @@ private final ProposalRepository proposalRepository;
     }
 
     private Department getActiveDepartment(Long id) {
-        Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Department not found with ID: " + id));
+        Department department = departmentService.findById(id);
         if (!Boolean.TRUE.equals(department.getActive())) {
             throw new BadRequestException("Department is inactive: " + id);
         }
@@ -189,8 +183,7 @@ private final ProposalRepository proposalRepository;
     }
 
     private Offering getActiveOffering(Long id) {
-        Offering offering = offeringRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Offering not found with ID: " + id));
+        Offering offering = offeringService.findById(id);
         if (!Boolean.TRUE.equals(offering.getActive())) {
             throw new BadRequestException("Offering is inactive: " + id);
         }
@@ -198,8 +191,7 @@ private final ProposalRepository proposalRepository;
     }
 
     private Category getActiveCategory(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
+        Category category = categoryService.findById(id);
         if (!Boolean.TRUE.equals(category.getActive())) {
             throw new BadRequestException("Category is inactive: " + id);
         }
@@ -224,7 +216,7 @@ private final ProposalRepository proposalRepository;
         } catch (JsonProcessingException exception) {
             throw new BadRequestException("Unable to create proposal version snapshot");
         }
-        proposalVersionRepository.save(version);
+        proposalVersionService.save(version);
         proposal.setCurrentVersion(versionNumber);
     }
 
