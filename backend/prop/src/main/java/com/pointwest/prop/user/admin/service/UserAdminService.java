@@ -11,9 +11,9 @@ import com.pointwest.prop.user.admin.dto.UserCreateRequestDto;
 import com.pointwest.prop.user.admin.dto.UserUpdateRequestDto;
 import com.pointwest.prop.user.dto.UserResponseDto;
 import com.pointwest.prop.common.entity.Department;
+import com.pointwest.prop.common.service.DepartmentService;
 import com.pointwest.prop.user.entity.User;
 import com.pointwest.prop.user.mapper.UserMapper;
-import com.pointwest.prop.common.repository.DepartmentRepository;
 import com.pointwest.prop.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class UserAdminService {
 
     private final UserRepository userRepository;
-    private final DepartmentRepository departmentRepository;
+    private final DepartmentService departmentService;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
@@ -48,12 +48,7 @@ public class UserAdminService {
             throw new IllegalArgumentException("Email is already registered.");
         }
 
-        Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Department not found."));
-
-        if (!Boolean.TRUE.equals(department.getActive())) {
-            throw new IllegalArgumentException("Cannot assign an inactive department.");
-        }
+        Department department = departmentService.getActiveDepartmentOrThrow(request.getDepartmentId());
 
         User user = new User();
         user.setFirstName(request.getFirstName());
@@ -81,12 +76,7 @@ public class UserAdminService {
                     throw new IllegalArgumentException("Email is already in use by another account.");
                 });
 
-        Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Department not found."));
-
-        if (!Boolean.TRUE.equals(department.getActive())) {
-            throw new IllegalArgumentException("Cannot assign an inactive department.");
-        }
+        Department department = departmentService.getActiveDepartmentOrThrow(request.getDepartmentId());
 
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
