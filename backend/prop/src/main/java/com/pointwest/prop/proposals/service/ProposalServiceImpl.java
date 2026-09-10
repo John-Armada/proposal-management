@@ -82,7 +82,7 @@ public class ProposalServiceImpl implements ProposalService{
         }
 
         // 1. Set initial status and version defaults
-        proposal.setStatus(ProposalStatus.DRAFT.name()); // Default status as DRAFT
+        proposal.setStatus(ProposalStatus.DRAFT);
         if (proposal.getCurrentVersion() == null) {
             proposal.setCurrentVersion(1);
         }
@@ -109,8 +109,14 @@ public class ProposalServiceImpl implements ProposalService{
     public Page<ProposalResponseDto> getProposals(String status, Long departmentId, Pageable pageable) {
         Specification<Proposal> specification = (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
         if (status != null && !status.isBlank()) {
+            ProposalStatus proposalStatus;
+            try {
+                proposalStatus = ProposalStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException exception) {
+                throw new BadRequestException("Invalid proposal status: " + status);
+            }
             specification = specification.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("status"), status.toUpperCase()));
+                    criteriaBuilder.equal(root.get("status"), proposalStatus));
         }
         if (departmentId != null) {
             specification = specification.and((root, query, criteriaBuilder) ->
@@ -138,10 +144,9 @@ public class ProposalServiceImpl implements ProposalService{
         Proposal existingProposal = proposalRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Proposal not found with ID: " + id));
 
-        if (ProposalStatus.IN_REVIEW.name().equals(existingProposal.getStatus())
-                || ProposalStatus.APPROVED.name().equals(existingProposal.getStatus())) {
+        if (ProposalStatus.APPROVED.equals(existingProposal.getStatus())) {
             writeVersion(existingProposal);
-            existingProposal.setStatus(ProposalStatus.DRAFT.name());
+            existingProposal.setStatus(ProposalStatus.DRAFT);
         }
 
         proposalMapper.updateEntityFromDto(requestDto, existingProposal);
