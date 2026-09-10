@@ -1,5 +1,6 @@
 package com.pointwest.prop.common.config;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.pointwest.prop.auth.model.Role;
 import com.pointwest.prop.common.entity.Department;
 import com.pointwest.prop.common.entity.Category;
 import com.pointwest.prop.common.entity.Offering;
+import com.pointwest.prop.common.entity.Proposal;
 import com.pointwest.prop.common.entity.Template;
 import com.pointwest.prop.common.repository.CategoryRepository;
 import com.pointwest.prop.common.repository.DepartmentRepository;
@@ -21,6 +23,8 @@ import com.pointwest.prop.common.repository.OfferingRepository;
 import com.pointwest.prop.templates.repository.TemplateRepository;
 import com.pointwest.prop.intake.entity.ProposalRequest;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
+import com.pointwest.prop.proposals.enums.ProposalStatus;
+import com.pointwest.prop.proposals.repository.ProposalRepository;
 import com.pointwest.prop.user.entity.User;
 import com.pointwest.prop.user.repository.UserRepository;
 
@@ -34,6 +38,7 @@ public class DataSeeder {
             AccountRepository accountRepository,
             OfferingRepository offeringRepository,
             ProposalRequestRepository proposalRequestRepository,
+            ProposalRepository proposalRepository,
             CategoryRepository categoryRepository,
             TemplateRepository templateRepository) {
         return args -> {
@@ -149,11 +154,59 @@ public class DataSeeder {
                     userRepository.findByEmailIgnoreCase("finance.author1@company.com")
                             .orElseThrow(() -> new IllegalStateException("Seed author was not created")));
 
-                        if (proposalRequestRepository.count() == 0) {
-                                seedProposalRequests(proposalRequestRepository, accounts, offerings,
-                                                proposalDepartments, authors);
+            if (proposalRequestRepository.count() == 0) {
+                seedProposalRequests(proposalRequestRepository, accounts, offerings,
+                        proposalDepartments, authors);
             }
+
+            seedProposals(proposalRepository, proposalRequestRepository, categories, templates);
         };
+    }
+
+    private void seedProposals(
+            ProposalRepository proposalRepository,
+            ProposalRequestRepository proposalRequestRepository,
+            List<Category> categories,
+            List<Template> templates) {
+        List<ProposalRequest> requests = proposalRequestRepository.findAll();
+        ProposalStatus[] statuses = {
+                ProposalStatus.DRAFT,
+                ProposalStatus.IN_REVIEW,
+                ProposalStatus.SENT,
+                ProposalStatus.WON,
+                ProposalStatus.LOST,
+                ProposalStatus.APPROVED
+        };
+
+                int seededCount = 0;
+                for (ProposalRequest request : requests) {
+                        if (seededCount >= 12) {
+                                break;
+                        }
+
+            if (request.getId() == null || proposalRepository.existsByRequestId(request.getId())) {
+                continue;
+            }
+
+            Proposal proposal = new Proposal();
+                        proposal.setTitle("Seed Proposal " + String.format("%02d", seededCount + 1));
+            proposal.setDescription("Sample proposal for pagination and filtering tests.");
+                        proposal.setStatus(statuses[seededCount % statuses.length]);
+            proposal.setCurrentVersion(1);
+                        proposal.setGoogleDocUrl("https://docs.google.com/document/d/seed-proposal-" + (seededCount + 1));
+                        proposal.setContractValue(BigDecimal.valueOf(10000L + (seededCount * 7500L)));
+                        proposal.setProjectDuration(30 + (seededCount * 5));
+                        proposal.setTotalResources(3 + (seededCount % 6));
+            proposal.setRequest(request);
+            proposal.setAccount(request.getAccount());
+            proposal.setDepartment(request.getDepartment());
+            proposal.setOffering(request.getOffering());
+                        proposal.setCategory(categories.get(seededCount % categories.size()));
+                        proposal.setTemplate(templates.get(seededCount % templates.size()));
+
+            proposalRepository.save(proposal);
+                        seededCount++;
+        }
     }
 
         private void seedProposalRequests(
@@ -161,7 +214,7 @@ public class DataSeeder {
             List<Account> accounts,
             List<Offering> offerings,
             List<Department> departments,
-                        List<User> authors) {
+                            List<User> authors) {
         for (int setIndex = 0; setIndex < 3; setIndex++) {
             for (int proposalIndex = 1; proposalIndex <= 5; proposalIndex++) {
                 Account account = accounts.get(setIndex);
@@ -169,7 +222,7 @@ public class DataSeeder {
                 Department department = departments.get(setIndex);
                 User author = authors.get(setIndex);
 
-                                proposalRequestRepository.save(new ProposalRequest(
+                proposalRequestRepository.save(new ProposalRequest(
                         null,
                         "Requirements for " + account.getName() + " proposal " + proposalIndex,
                         LocalDate.now().plusDays(30 + proposalIndex),
