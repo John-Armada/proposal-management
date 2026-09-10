@@ -1,134 +1,90 @@
-<!-- src/app/features/admin/components/user-management/user-management.component.html -->
-
 <div class="user-management-shell">
     <app-sidebar [navItems]="navItems" />
 
-    <main class="user-management-content container-fluid p-3 p-md-4">
-    <!-- Header -->
-    <div
-        class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
-        <div>
-            <h2 class="h4 mb-0 fw-bold">User Management</h2>
-            <p class="text-muted small mb-0">Manage system accounts, roles, and department assignments.</p>
-        </div>
-        <button type="button" class="btn btn-primary" (click)="openCreateModal()">
-            + Add New User
-        </button>
-    </div>
+    <div class="user-management-main">
+        <app-navbar />
 
-    @if (errorMessage(); as message) {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" aria-label="Dismiss error" (click)="errorMessage.set('')"></button>
-        </div>
-    }
-
-    <div class="card shadow-sm border-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (user of users(); track user.userId) {
-                    <tr>
-                        <td>
-                            <div class="fw-semibold">{{ user.name }}</div>
-                        </td>
-                        <td>{{ user.email }}</td>
-                        <td>
-                            <span class="badge bg-secondary">{{ user.role }}</span>
-                        </td>
-                        <td>
-                            <span class="badge bg-outline-info text-dark">
-                                {{ user.deptName }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge" [ngClass]="user.active ? 'bg-success' : 'bg-danger'">
-                                {{ user.active ? 'Active' : 'Deactivated' }}
-                            </span>
-                        </td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-outline-primary me-2" (click)="openEditModal(user)">
-                                Edit
-                            </button>
-                            <button type="button" class="btn btn-sm"
-                                [ngClass]="user.active ? 'btn-outline-danger' : 'btn-outline-success'"
-                                (click)="toggleStatus(user)">
-                                {{ user.active ? 'Deactivate' : 'Reactivate' }}
-                            </button>
-                        </td>
-                    </tr>
-                    } @empty {
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">No users found.</td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        @if (totalPages() > 1) {
-        <div class="card-footer d-flex justify-content-between align-items-center bg-white py-3">
-            <small class="text-muted">
-                Showing {{ users().length }} of {{ totalElements() }} users
-            </small>
-            <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-outline-secondary" [disabled]="currentPage() === 0"
-                    (click)="onPageChange(currentPage() - 1)">
-                    Previous
-                </button>
-                <button type="button" class="btn btn-outline-secondary" [disabled]="currentPage() >= totalPages() - 1"
-                    (click)="onPageChange(currentPage() + 1)">
-                    Next
+        <main class="user-management-content container-fluid p-3 p-md-4">
+            <!-- Header -->
+            <div
+                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
+                <div>
+                    <h2 class="h4 mb-0 fw-bold">User Management</h2>
+                    <p class="text-muted small mb-0">Manage system accounts, roles, and department assignments.</p>
+                </div>
+                <button type="button" class="btn btn-primary" (click)="openCreateModal()">
+                    + Add New User
                 </button>
             </div>
-        </div>
-        }
+
+            @if (errorMessage(); as message) {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" aria-label="Dismiss error"
+                    (click)="errorMessage.set('')"></button>
+            </div>
+            }
+
+            <app-data-table [columns]="columns" [rows]="users()" [trackByFn]="trackByUser" [loading]="isLoadingUsers()"
+                emptyMessage="No users found." [page]="currentPage()" [pageSize]="pageSize()"
+                [totalElements]="totalElements()" (pageChange)="onPageChange($event)"
+                (pageSizeChange)="onPageSizeChange($event)">
+                <ng-template #rowActions let-user>
+                    <button type="button" class="row-icon-btn" title="Edit" [attr.aria-label]="'Edit ' + user.name"
+                        (click)="openEditModal(user)">
+                        <fa-icon [icon]="icons.edit" aria-hidden="true"></fa-icon>
+                    </button>
+                    <button type="button" class="row-icon-btn" [class.is-danger]="user.active"
+                        [class.is-success]="!user.active" [title]="user.active ? 'Deactivate' : 'Reactivate'"
+                        [attr.aria-label]="(user.active ? 'Deactivate ' : 'Reactivate ') + user.name"
+                        (click)="toggleStatus(user)">
+                        <fa-icon [icon]="user.active ? icons.userSlash : icons.userCheck" aria-hidden="true"></fa-icon>
+                    </button>
+                </ng-template>
+            </app-data-table>
+        </main>
     </div>
-    </main>
 </div>
 
 <!-- User Create / Edit Modal -->
 @if (showModal) {
-<div class="modal backdrop-show d-block" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="user-modal-title">
+<div class="modal backdrop-show d-block" tabindex="-1" role="dialog" aria-modal="true"
+    aria-labelledby="user-modal-title">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
+            <div class="modal-drag-handle" aria-hidden="true"></div>
             <div class="modal-header">
-                <h5 id="user-modal-title" class="modal-title fw-bold">{{ isEditMode ? 'Edit User' : 'Create New User' }}</h5>
+                <h5 id="user-modal-title" class="modal-title fw-bold">{{ isEditMode ? 'Edit User' : 'Create New User' }}
+                </h5>
                 <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
             </div>
             <form [formGroup]="userForm" (ngSubmit)="saveUser()">
                 <div class="modal-body">
 
                     <div class="row g-2 mb-3">
-                        <div class="col-6">
+                        <div class="col-12 col-md-6">
                             <label class="form-label required" for="first-name">First Name</label>
-                            <input id="first-name" type="text" class="form-control" formControlName="firstName" autocomplete="given-name" />
+                            <input id="first-name" type="text" class="form-control" formControlName="firstName"
+                                autocomplete="given-name" />
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-md-6">
                             <label class="form-label required" for="last-name">Last Name</label>
-                            <input id="last-name" type="text" class="form-control" formControlName="lastName" autocomplete="family-name" />
+                            <input id="last-name" type="text" class="form-control" formControlName="lastName"
+                                autocomplete="family-name" />
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label required" for="email">Email</label>
-                        <input id="email" type="email" class="form-control" formControlName="email" autocomplete="email" />
+                        <input id="email" type="email" class="form-control" formControlName="email"
+                            autocomplete="email" />
                     </div>
 
                     @if (!isEditMode) {
                     <div class="mb-3">
                         <label class="form-label required" for="password">Password</label>
-                        <input id="password" type="password" class="form-control" formControlName="password" autocomplete="new-password" />
+                        <input id="password" type="password" class="form-control" formControlName="password"
+                            autocomplete="new-password" />
                     </div>
                     }
 
@@ -136,7 +92,7 @@
                         <label class="form-label required" for="role">Role</label>
                         <select id="role" class="form-select" formControlName="role">
                             @for (role of roles; track role) {
-                                <option [value]="role">{{ role }}</option>
+                            <option [value]="role">{{ role }}</option>
                             }
                         </select>
                     </div>
