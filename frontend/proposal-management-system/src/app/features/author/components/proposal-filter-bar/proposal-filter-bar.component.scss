@@ -1,0 +1,28 @@
+@use '../../../../../styles/abstracts' as *;
+
+.filter-bar {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: $space-3;
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: $space-1;
+        min-width: 10rem;
+
+        label {
+            margin-bottom: 0;
+        }
+    }
+
+    &__clear {
+        padding-bottom: 0.4375rem;
+        color: $slate;
+
+        &:hover {
+            color: $body-color;
+        }
+    }
+}

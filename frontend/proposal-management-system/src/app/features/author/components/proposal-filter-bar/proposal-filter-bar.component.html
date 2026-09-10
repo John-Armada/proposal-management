@@ -1,0 +1,28 @@
+<form class="filter-bar" [formGroup]="form" (ngSubmit)="emitChange()">
+    <div class="filter-bar__field">
+        <label class="text-meta" for="status-filter">Status</label>
+        <select id="status-filter" class="form-select form-select-sm" formControlName="status" (change)="emitChange()">
+            <option [ngValue]="null">All statuses</option>
+            @for (status of statuses; track status) {
+            <option [ngValue]="status">{{ status }}</option>
+            }
+        </select>
+    </div>
+
+    <div class="filter-bar__field">
+        <label class="text-meta" for="department-filter">Department</label>
+        <select id="department-filter" class="form-select form-select-sm" formControlName="departmentId"
+            (change)="emitChange()">
+            <option [ngValue]="null">All departments</option>
+            @for (department of departments(); track department.id) {
+            <option [ngValue]="department.id">{{ department.name }}</option>
+            }
+        </select>
+    </div>
+
+    @if (form.value.status || form.value.departmentId) {
+    <button type="button" class="btn btn-link btn-sm filter-bar__clear" (click)="reset()">
+        Clear filters
+    </button>
+    }
+</form>
