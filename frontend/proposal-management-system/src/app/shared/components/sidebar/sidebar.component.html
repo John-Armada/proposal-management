@@ -1,5 +1,6 @@
 <aside class="sidebar" [class.collapsed]="isCollapsed">
-    <button type="button" class="toggle-btn" (click)="toggleSidebar()" aria-label="Toggle Navigation">
+    <button type="button" class="toggle-btn" (click)="toggleSidebar()" aria-label="Toggle Navigation"
+        [attr.aria-expanded]="!isCollapsed">
         <fa-icon [icon]="isCollapsed ? icons.chevronRight : icons.chevronLeft"></fa-icon>
     </button>
 
@@ -7,34 +8,22 @@
         <div class="logo-icon">
             <img src="/branding/logo-img.svg" alt="Proposal Management System logo" />
         </div>
-        @if (!isCollapsed) {
         <div class="brand-text">
             <span class="title-main">PROPOSAL</span>
             <span class="title-sub">Management System</span>
         </div>
-        }
     </div>
 
     <nav class="nav-list">
         @for (item of navItems; track item.route) {
-        <a [routerLink]="item.route" routerLinkActive="active" class="nav-item" [title]="isCollapsed ? item.label : ''">
+        <a [routerLink]="item.route" routerLinkActive="active" ariaCurrentWhenActive="page" class="nav-item"
+            [title]="isCollapsed ? item.label : ''">
             <fa-icon class="nav-icon" [icon]="item.icon"></fa-icon>
-            @if (!isCollapsed) {
             <span class="nav-label">{{ item.label }}</span>
             @if (item.badge) {
             <span class="nav-badge">{{ item.badge }}</span>
             }
-            }
         </a>
         }
     </nav>
-
-    <div class="sidebar-footer">
-        <button type="button" class="nav-item logout-btn" (click)="onLogout()" [title]="isCollapsed ? 'Logout' : ''">
-            <fa-icon class="nav-icon" [icon]="icons.logout"></fa-icon>
-            @if (!isCollapsed) {
-            <span class="nav-label">Logout</span>
-            }
-        </button>
-    </div>
 </aside>
