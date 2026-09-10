@@ -10,7 +10,9 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
+@Builder(toBuilder = true)
 public record UpdateProposalRequestDto(
 
     @Size(max = 255, message = "Title must not exceed 255 characters")
