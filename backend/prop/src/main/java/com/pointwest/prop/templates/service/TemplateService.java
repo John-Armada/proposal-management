@@ -82,6 +82,11 @@ public class TemplateService {
         return toDto(template);
     }
 
+    public Template findById(Long id){
+        return templateRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Cannot find Template with ID: " + id));
+    }
+
     private TemplateResponseDto toDto(Template template) {
         return new TemplateResponseDto(
                 template.getId(),

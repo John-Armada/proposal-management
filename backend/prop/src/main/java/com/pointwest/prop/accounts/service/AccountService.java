@@ -13,6 +13,7 @@ import com.pointwest.prop.common.exception.ConflictException;
 import com.pointwest.prop.common.exception.ResourceNotFoundException;
 import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -70,6 +71,11 @@ public class AccountService {
         }
 
         accountRepository.delete(account);
+    }
+
+    public Account findById(Long id){
+        return accountRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Cannot find Account Entity with ID: " + id));
     }
 
     private AccountResponseDto mapToDto(Account a) {

@@ -22,6 +22,7 @@ import com.pointwest.prop.intake.repository.ProposalRequestRepository;
 import com.pointwest.prop.user.entity.User;
 import com.pointwest.prop.user.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -197,6 +198,11 @@ public class ProposalRequestService {
         if (!isOwner && !SecurityUtils.isReviewer() && !SecurityUtils.isAdmin()) {
             throw new AccessDeniedException("You are not authorized to modify this Proposal Request.");
         }
+    }
+
+    public ProposalRequest findById(Long id){
+        return proposalRequestRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Cannot find Proposal Request entity with ID: " + id));
     }
 
     /*
