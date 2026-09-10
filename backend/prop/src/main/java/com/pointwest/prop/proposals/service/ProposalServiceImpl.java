@@ -35,14 +35,15 @@ import com.pointwest.prop.proposals.repository.ProposalRepository;
 import com.pointwest.prop.templates.repository.TemplateRepository;
 
 import com.pointwest.prop.common.exception.BadRequestException;
+import com.pointwest.prop.common.exception.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j 
-@Service 
-@RequiredArgsConstructor 
-public class ProposalServiceImpl implements ProposalService{
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ProposalServiceImpl implements ProposalService {
 
     private final ProposalRepository proposalRepository;
     private final TemplateRepository templateRepository;
@@ -54,18 +55,19 @@ public class ProposalServiceImpl implements ProposalService{
     private final ProposalVersionRepository proposalVersionRepository;
     private final ProposalMapper proposalMapper;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    
+
     @Override
-    @Transactional 
+    @Transactional
     public ProposalResponseDto createProposal(CreateProposalRequestDto requestDto) {
         log.info("Creating new proposal for Account ID: {}", requestDto.accountId());
-        
+
         Proposal proposal = proposalMapper.toEntity(requestDto);
 
         ProposalRequest request = proposalRequestRepository.findById(requestDto.requestId())
-            .orElseThrow(() -> new EntityNotFoundException("Proposal request not found with ID: " + requestDto.requestId()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Proposal request not found with ID: " + requestDto.requestId()));
         Account account = accountRepository.findById(requestDto.accountId())
-            .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + requestDto.accountId()));
+                .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + requestDto.accountId()));
         Department department = getActiveDepartment(requestDto.departmentId());
         Offering offering = getActiveOffering(requestDto.offeringId());
 
@@ -90,8 +92,9 @@ public class ProposalServiceImpl implements ProposalService{
         // 2. Fetch & attach Template if templateId is provided
         if (requestDto.templateId() != null) {
             Template template = templateRepository.findById(requestDto.templateId())
-                .orElseThrow(() -> new EntityNotFoundException("Template not found with ID: " + requestDto.templateId()));
-            
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Template not found with ID: " + requestDto.templateId()));
+
             proposal.setTemplate(template);
 
             // Inherit Google Doc URL from template if not provided in payload
@@ -115,12 +118,12 @@ public class ProposalServiceImpl implements ProposalService{
             } catch (IllegalArgumentException exception) {
                 throw new BadRequestException("Invalid proposal status: " + status);
             }
-            specification = specification.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("status"), proposalStatus));
+            specification = specification
+                    .and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), proposalStatus));
         }
         if (departmentId != null) {
-            specification = specification.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("department").get("id"), departmentId));
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder
+                    .equal(root.get("department").get("id"), departmentId));
         }
         return proposalRepository.findAll(specification, pageable).map(proposalMapper::toDto);
     }
@@ -129,10 +132,10 @@ public class ProposalServiceImpl implements ProposalService{
     @Transactional(readOnly = true)
     public ProposalResponseDto getProposalById(Long id) {
         log.info("Fetching proposal with ID: {}", id);
-        
+
         Proposal proposal = proposalRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Proposal not found with ID: " + id));
-                
+
         return proposalMapper.toDto(proposal);
     }
 
@@ -140,7 +143,7 @@ public class ProposalServiceImpl implements ProposalService{
     @Transactional
     public ProposalResponseDto updateProposal(Long id, UpdateProposalRequestDto requestDto) {
         log.info("Updating proposal with ID: {}", id);
-        
+
         Proposal existingProposal = proposalRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Proposal not found with ID: " + id));
 
@@ -160,8 +163,21 @@ public class ProposalServiceImpl implements ProposalService{
             existingProposal.setOffering(getActiveOffering(requestDto.offeringId()));
         }
         Proposal updatedProposal = proposalRepository.save(existingProposal);
-        
+
         return proposalMapper.toDto(updatedProposal);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Proposal getProposalEntity(Long id) {
+        return proposalRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proposal", "id", id));
+    }
+
+    @Override
+    @Transactional
+    public Proposal saveProposalEntity(Proposal proposal) {
+        return proposalRepository.save(proposal);
     }
 
     private Department getActiveDepartment(Long id) {
@@ -212,5 +228,5 @@ public class ProposalServiceImpl implements ProposalService{
         proposalVersionRepository.save(version);
         proposal.setCurrentVersion(versionNumber);
     }
-    
+
 }

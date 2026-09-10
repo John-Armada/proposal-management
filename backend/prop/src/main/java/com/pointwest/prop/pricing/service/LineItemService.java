@@ -16,10 +16,9 @@ import com.pointwest.prop.common.exception.ResourceNotFoundException;
 import com.pointwest.prop.pricing.dto.LineItemRequestDto;
 import com.pointwest.prop.pricing.dto.LineItemResponseDto;
 import com.pointwest.prop.pricing.mapper.LineItemMapper;
-import com.pointwest.prop.pricing.repository.CatalogItemRepository;
 import com.pointwest.prop.pricing.repository.LineItemRepository;
 import com.pointwest.prop.pricing.util.PricingCalculator;
-import com.pointwest.prop.proposals.repository.ProposalRepository;
+import com.pointwest.prop.proposals.service.ProposalService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,19 +27,19 @@ import lombok.RequiredArgsConstructor;
 public class LineItemService {
 
     private final LineItemRepository lineItemRepository;
-    private final ProposalRepository proposalRepository;
-    private final CatalogItemRepository catalogItemRepository;
+    private final ProposalService proposalService;
+    private final CatalogItemService catalogItemService;
     private final LineItemMapper lineItemMapper;
 
     public Page<LineItemResponseDto> getLineItems(Long proposalId, Pageable pageable) {
-        ensureProposalExists(proposalId);
+        proposalService.getProposalEntity(proposalId);
         return lineItemRepository.findByProposalId(proposalId, pageable)
                 .map(lineItemMapper::toResponse);
     }
 
     @Transactional
     public LineItemResponseDto createLineItem(Long proposalId, LineItemRequestDto request) {
-        Proposal proposal = getProposalOrThrow(proposalId);
+        Proposal proposal = proposalService.getProposalEntity(proposalId);
         CatalogItem catalogItem = resolveCatalogItem(request.getCatalogItemId());
 
         LineItem lineItem = new LineItem();
@@ -107,26 +106,14 @@ public class LineItemService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         proposal.setContractValue(total);
-        proposalRepository.save(proposal);
-    }
-
-    private Proposal getProposalOrThrow(Long proposalId) {
-        return proposalRepository.findById(proposalId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proposal", "id", proposalId));
-    }
-
-    private void ensureProposalExists(Long proposalId) {
-        if (!proposalRepository.existsById(proposalId)) {
-            throw new ResourceNotFoundException("Proposal", "id", proposalId);
-        }
+        proposalService.saveProposalEntity(proposal);
     }
 
     private CatalogItem resolveCatalogItem(Long catalogItemId) {
         if (catalogItemId == null) {
             return null;
         }
-        return catalogItemRepository.findById(catalogItemId)
-                .orElseThrow(() -> new ResourceNotFoundException("CatalogItem", "id", catalogItemId));
+        return catalogItemService.getCatalogItemEntity(catalogItemId);
     }
 
     private LineItem getLineItemOrThrow(Long proposalId, Long lineItemId) {

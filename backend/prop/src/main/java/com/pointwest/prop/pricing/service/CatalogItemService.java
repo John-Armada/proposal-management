@@ -58,6 +58,10 @@ public class CatalogItemService {
         }
     }
 
+    public CatalogItem getCatalogItemEntity(Long id) {
+        return getCatalogItemOrThrow(id);
+    }
+
     private CatalogItem getCatalogItemOrThrow(Long id) {
         return catalogItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("CatalogItem", "id", id));
